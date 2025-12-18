@@ -66,6 +66,15 @@ const Portfolio = () => {
     }
   ];
 
+  const sectionIcons = {
+  hero: Terminal,
+  about: Code,
+  skills: Shield,
+  projects: Server,
+  experience: Eye,
+  contact: Lock
+};
+
   const ScrollIndicator = () => (
     <div className="fixed top-0 left-0 w-full h-1 bg-gray-800 z-50">
       <div 
@@ -75,22 +84,45 @@ const Portfolio = () => {
     </div>
   );
 
-  const Navigation = () => (
+//   const Navigation = () => (
+//     <nav className="fixed top-4 right-4 z-40 flex gap-2">
+//       {['hero', 'about', 'skills', 'projects', 'experience', 'contact'].map(section => (
+//         <button
+//           key={section}
+//           onClick={() => sectionsRef.current[section]?.scrollIntoView({ behavior: 'smooth' })}
+//           className={`w-3 h-3 rounded-full transition-all duration-300 ${
+//             activeSection === section 
+//               ? 'bg-emerald-500 w-8' 
+//               : 'bg-gray-600 hover:bg-gray-500'
+//           }`}
+//           aria-label={section}
+//         />
+//       ))}
+//     </nav>
+//   );
+
+
+    const Navigation = () => (
     <nav className="fixed top-4 right-4 z-40 flex gap-2">
-      {['hero', 'about', 'skills', 'projects', 'experience', 'contact'].map(section => (
-        <button
-          key={section}
-          onClick={() => sectionsRef.current[section]?.scrollIntoView({ behavior: 'smooth' })}
-          className={`w-3 h-3 rounded-full transition-all duration-300 ${
-            activeSection === section 
-              ? 'bg-emerald-500 w-8' 
-              : 'bg-gray-600 hover:bg-gray-500'
-          }`}
-          aria-label={section}
-        />
-      ))}
+        {['hero', 'about', 'skills', 'projects', 'experience', 'contact'].map(section => {
+        const Icon = sectionIcons[section];
+        const isActive = activeSection === section;
+
+        return (
+            <button
+            key={section}
+            onClick={() => sectionsRef.current[section]?.scrollIntoView({ behavior: 'smooth' })}
+            className={`w-3 h-3 rounded-full transition-all duration-300 flex items-center justify-center ${
+                isActive ? 'bg-transparent w-8' : 'bg-gray-600 hover:bg-gray-500'
+            }`}
+            aria-label={section}
+            >
+            {isActive && <Icon size={20} className="text-emerald-500" />}
+            </button>
+        );
+        })}
     </nav>
-  );
+    );
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100 font-mono">
