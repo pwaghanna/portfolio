@@ -37,9 +37,9 @@ const Portfolio = () => {
 
   const projects = [
     {
-      title: 'VFS Rootkit',
+      title: 'Houdini - VFS Rootkit',
       description: 'Advanced kernel-level rootkit targeting VFS layer to hide files, spoof data, and maintain persistence. Implements stealth techniques to evade detection.',
-      tech: ['C', 'Kernel Programming', 'Linux', 'Assembly'],
+      tech: ['C', 'Kernel Programming', 'FreeBSD'],
       icon: Shield,
       status: 'In Progress',
       highlight: true
