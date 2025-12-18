@@ -9,7 +9,6 @@
   "build": "next build",
   "start": "next start -p 3000",
   "lint": "next lint",
-  "export": "next build && next export",
   "deploy": "gh-pages -d out"
 },
   "keywords": [],
