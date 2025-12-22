@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Terminal, Shield, Code, Lock, Eye, Server, Github, Linkedin, Mail, ChevronDown } from 'lucide-react';
+import { Terminal, Shield, Code, Lock, Eye, Server, Github, Linkedin, Mail, ChevronDown, Trophy, Gamepad2, Activity, Flag } from 'lucide-react';
 
 const Portfolio = () => {
   const [activeSection, setActiveSection] = useState('hero');
@@ -31,7 +31,7 @@ const Portfolio = () => {
   const skills = {
     'Security & Crypto': ['Penetration Testing', 'Cryptography', 'Web Fuzzing', 'Footprinting', 'nmap', 'Sockets'],
     'Systems & Low-Level': ['C', 'C++', 'Rust', 'Shell/Bash', 'Unix', 'Kernel Programming'],
-    'Software Engineering': ['MERN Stack', 'React', 'Node.js', 'Python', 'Java', 'Git'],
+    'Software Engineering': ['MERN Stack', 'React', 'Typescript','Node.js', 'Python', 'Flask', 'Java', 'Git'],
     'Cloud & DevOps': ['AWS EC2', 'AWS S3', 'Docker', 'CI/CD']
   };
 
@@ -42,13 +42,33 @@ const Portfolio = () => {
       tech: ['C', 'Kernel Programming', 'FreeBSD'],
       icon: Shield,
       status: 'In Progress',
-      highlight: true
+      highlight: true,
+      isGithub: true,
+      link: 'github.com/pwaghanna/houdini'
+    },
+    {
+      title: 'RoomSense - AR Classroom Engagement',
+      description: 'AR/VR solution using Snap Spectacles to provide real-time student engagement tracking, anonymous Q&A, and lecture management. Achieved 8.75/10 satisfaction rating in user studies.',
+      tech: ['Next.js', 'TypeScript', 'Flask', 'MongoDB', 'AWS', 'Snap AR'],
+      icon: Eye,
+      highlight: false,
+      isGithub: false,
+      link: 'sites.google.com/view/roomsense/'
+    },
+    {
+      title: 'LHUPR - Distributed Version Control',
+      description: 'Lightweight distributed version control system built from scratch in Rust. Implements commits, branching, merging, and remote sync with modular architecture following information hiding principles.',
+      tech: ['Rust', 'Distributed Systems', 'File Systems'],
+      icon: Code,
+      isGithub: false,
+      highlight: false
     },
     {
       title: 'Cryptopals Challenges',
       description: 'Implemented solutions covering block cipher modes, stream ciphers, padding oracle attacks, and key recovery. Refactored in C for 60% performance improvement.',
       tech: ['Python', 'C', 'Cryptography'],
       icon: Lock,
+      isGithub:true,
       link: 'github.com/pwaghanna'
     },
     {
@@ -56,12 +76,15 @@ const Portfolio = () => {
       description: 'Completed 7+ HackTheBox labs demonstrating reconnaissance, exploitation, and reporting. Developed custom automation scripts reducing exploit time by 30%.',
       tech: ['Python', 'Bash', 'Metasploit', 'nmap'],
       icon: Eye,
-      link: 'github.com/pwaghanna'
+      link: 'github.com/pwaghanna',
+      isGithub:true,
     },
     {
       title: 'Industrial IoT Platform',
       description: 'Led team of 8 engineers building MERN stack application for real-time production monitoring. Integrated ESP32 microprocessors and ThingSpeak for data collection.',
       tech: ['React', 'Node.js', 'MongoDB', 'AWS'],
+      isGithub:false,
+      highlight: false,
       icon: Server
     }
   ];
@@ -72,7 +95,8 @@ const Portfolio = () => {
   skills: Shield,
   projects: Server,
   experience: Eye,
-  contact: Lock
+  contact: Lock,
+  interests: Trophy
 };
 
   const ScrollIndicator = () => (
@@ -104,7 +128,7 @@ const Portfolio = () => {
 
     const Navigation = () => (
     <nav className="fixed top-4 right-4 z-40 flex gap-2">
-        {['hero', 'about', 'skills', 'projects', 'experience', 'contact'].map(section => {
+        {['hero', 'about', 'skills', 'projects', 'experience', 'interests', 'contact'].map(section => {
         const Icon = sectionIcons[section];
         const isActive = activeSection === section;
 
@@ -205,6 +229,11 @@ const Portfolio = () => {
                 persistence techniques and kernel-space programming.
               </p>
               <p>
+                <span className="text-emerald-500">$</span> Built a <span className="text-cyan-400 font-semibold">distributed version control system</span> from 
+                scratch in Rust and developed an <span className="text-cyan-400 font-semibold">AR classroom engagement platform</span> using 
+                Snap Spectacles, demonstrating expertise across systems programming, distributed computing, and immersive technologies.
+              </p>
+              <p>
                 <span className="text-emerald-500">$</span> Former Full Stack Developer at Huf India, where I led a team of 8 engineers 
                 building industrial IoT solutions. Reduced manual processing time from 1 week to seconds through automation.
               </p>
@@ -290,7 +319,7 @@ const Portfolio = () => {
                 {project.link && (
                   <a href={`https://${project.link}`} target="_blank" rel="noopener noreferrer"
                      className="text-emerald-500 hover:text-emerald-400 text-sm flex items-center gap-1">
-                    View on GitHub →
+                    {project.isGithub? "View on GitHub →": "Visit Site →"}
                   </a>
                 )}
               </div>
@@ -340,6 +369,70 @@ const Portfolio = () => {
         </div>
       </section>
 
+      {/* Interests Section */}
+    <section 
+    ref={el => sectionsRef.current.interests = el}
+    className="min-h-screen flex items-center justify-center px-4 py-20"
+    >
+    <div className="max-w-6xl mx-auto w-full">
+        <h2 className="text-4xl font-bold mb-12 flex items-center gap-3">
+        <span className="text-emerald-500">&gt;</span> Interests
+        </h2>
+
+        <div className="grid md:grid-cols-2 gap-6">
+        
+        {/* Formula 1 */}
+        <div className="bg-gray-900 rounded-lg p-6 border border-gray-800 hover:border-emerald-500 transition-all duration-300 hover:scale-105">
+            <div className="flex items-center gap-3 mb-3">
+            <Flag className="text-red-400" size={28} />
+            <h3 className="text-xl font-bold">Formula 1</h3>
+            </div>
+            <p className="text-gray-400 text-sm">
+            Passionate follower of Formula 1, fascinated by race strategy, telemetry,
+            aerodynamics, and the engineering tradeoffs behind peak performance.
+            </p>
+        </div>
+
+        {/* Kart Racing */}
+        <div className="bg-gray-900 rounded-lg p-6 border border-gray-800 hover:border-emerald-500 transition-all duration-300 hover:scale-105">
+            <div className="flex items-center gap-3 mb-3">
+            <Activity className="text-cyan-400" size={28} />
+            <h3 className="text-xl font-bold">Kart Racing</h3>
+            </div>
+            <p className="text-gray-400 text-sm">
+            Hands-on racing experience that builds precision, reflexes, and situational awareness —
+            skills that translate directly into focus-driven technical work.
+            </p>
+        </div>
+
+        {/* Martial Arts */}
+        <div className="bg-gray-900 rounded-lg p-6 border border-gray-800 hover:border-emerald-500 transition-all duration-300 hover:scale-105">
+            <div className="flex items-center gap-3 mb-3">
+            <Trophy className="text-emerald-400" size={28} />
+            <h3 className="text-xl font-bold">Martial Arts</h3>
+            </div>
+            <p className="text-gray-400 text-sm">
+            Practice focused on discipline, consistency, and mental resilience - reinforcing problem-solving under pressure and long-term persistence.
+            </p>
+        </div>
+
+        {/* Video Gaming */}
+        <div className="bg-gray-900 rounded-lg p-6 border border-gray-800 hover:border-emerald-500 transition-all duration-300 hover:scale-105">
+            <div className="flex items-center gap-3 mb-3">
+            <Gamepad2 className="text-purple-400" size={28} />
+            <h3 className="text-xl font-bold">Video Gaming</h3>
+            </div>
+            <p className="text-gray-400 text-sm">
+            Enjoy competitive and strategy-based games that emphasize optimization,
+            pattern recognition, and adaptive decision-making.
+            </p>
+        </div>
+
+        </div>
+    </div>
+    </section>
+
+
       {/* Contact Section */}
       <section 
         ref={el => sectionsRef.current.contact = el}
@@ -375,6 +468,8 @@ const Portfolio = () => {
           </div>
         </div>
       </section>
+
+      
 
       {/* Footer */}
       <footer className="py-8 text-center text-gray-600 border-t border-gray-800">
