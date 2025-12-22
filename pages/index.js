@@ -69,14 +69,14 @@ const Portfolio = () => {
       tech: ['Python', 'C', 'Cryptography'],
       icon: Lock,
       isGithub:true,
-      link: 'github.com/pwaghanna'
+      link: 'github.com/pwaghanna/CrytoPals'
     },
     {
       title: 'HTB Penetration Testing',
       description: 'Completed 7+ HackTheBox labs demonstrating reconnaissance, exploitation, and reporting. Developed custom automation scripts reducing exploit time by 30%.',
       tech: ['Python', 'Bash', 'Metasploit', 'nmap'],
       icon: Eye,
-      link: 'github.com/pwaghanna',
+      link: 'github.com/pwaghanna/Pentesting_HTB',
       isGithub:true,
     },
     {
