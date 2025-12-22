@@ -400,8 +400,8 @@ const Portfolio = () => {
             <h3 className="text-xl font-bold">Kart Racing</h3>
             </div>
             <p className="text-gray-400 text-sm">
-            Hands-on racing experience that builds precision, reflexes, and situational awareness —
-            skills that translate directly into focus-driven technical work.
+            National Kart Racing competitor with experience in vehicle dynamics, structural analysis and manufacturing techniques.
+            Participated in Formula Kart Design Challenge 2023(FKDC).
             </p>
         </div>
 
@@ -412,7 +412,7 @@ const Portfolio = () => {
             <h3 className="text-xl font-bold">Martial Arts</h3>
             </div>
             <p className="text-gray-400 text-sm">
-            Practice focused on discipline, consistency, and mental resilience - reinforcing problem-solving under pressure and long-term persistence.
+            Practice focused on discipline, consistency, and mental resilience. Training in Kickboxing, Jiu Jitsu, Wrestling, and Muay Thai.
             </p>
         </div>
 
@@ -423,8 +423,7 @@ const Portfolio = () => {
             <h3 className="text-xl font-bold">Video Gaming</h3>
             </div>
             <p className="text-gray-400 text-sm">
-            Enjoy competitive and strategy-based games that emphasize optimization,
-            pattern recognition, and adaptive decision-making.
+            Enjoy competitive and strategy-based games such as Age of Empires, No Man's Sky, and Counter Strike.
             </p>
         </div>
 
