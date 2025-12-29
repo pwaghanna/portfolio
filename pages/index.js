@@ -188,7 +188,7 @@ const Portfolio = () => {
           </p>
           <div className="flex gap-4 justify-center">
             <a 
-              href="/Resume_PranavWaghanna.pdf" 
+              href="/portfolio/Resume_PranavWaghanna.pdf" 
               target="_blank" 
               rel="noopener noreferrer"
               className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-cyan-500 text-gray-950 font-bold rounded-lg transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-emerald-500/50 flex items-center gap-2"
