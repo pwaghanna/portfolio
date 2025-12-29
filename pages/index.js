@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Terminal, Shield, Code, Lock, Eye, Server, Github, Linkedin, Mail, ChevronDown, Trophy, Gamepad2, Activity, Flag } from 'lucide-react';
+import { Terminal, Shield, Code, Lock, Eye, Server, Github, Linkedin, Mail, ChevronDown, Trophy, Gamepad2, Activity, Flag, Monitor } from 'lucide-react';
 
 const Portfolio = () => {
   const [activeSection, setActiveSection] = useState('hero');
@@ -45,6 +45,15 @@ const Portfolio = () => {
       highlight: true,
       isGithub: true,
       link: 'github.com/pwaghanna/houdini'
+    },
+    {
+      title: 'eBPF System Monitor',
+      description: 'Real-time kernel-level security monitoring tool using eBPF for syscall tracing. Tracks process execution, file operations, and network activity with intelligent behavioral detection for malicious patterns.',
+      tech: ['eBPF', 'C', 'Python', 'BCC', 'Kernel Tracing'],
+      icon: Monitor, // or Activity, Monitor, Shield
+      highlight: false,
+      isGithub: true,
+      link: 'github.com/pwaghanna/eBPF-Monitor'
     },
     {
       title: 'RoomSense - AR Classroom Engagement',
@@ -179,7 +188,7 @@ const Portfolio = () => {
           </p>
           <div className="flex gap-4 justify-center">
             <a 
-              href="/portfolio/Resume_PranavWaghanna.pdf" 
+              href="/Resume_PranavWaghanna.pdf" 
               target="_blank" 
               rel="noopener noreferrer"
               className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-cyan-500 text-gray-950 font-bold rounded-lg transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-emerald-500/50 flex items-center gap-2"
