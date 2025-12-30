@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Terminal, Shield, Code, Lock, Eye, Server, Github, Linkedin, Mail, Glasses, Factory, ChevronDown, Trophy, Gamepad2, Activity, Flag, Monitor, ArrowLeft, ExternalLink, Layers } from 'lucide-react';
+import { Terminal, Shield, Code, Lock, Eye, Server, Target, Github, Linkedin, Mail, Glasses, Factory, ChevronDown, Trophy, Gamepad2, Activity, Flag, Monitor, ArrowLeft, ExternalLink, Layers } from 'lucide-react';
 
 // Mock Next.js router for demo
 const useRouter = () => {
@@ -73,7 +73,7 @@ const Portfolio = () => {
   };
 
   const skills = {
-    'Security & Crypto': ['Penetration Testing', 'Cryptography', 'Web Fuzzing', 'Footprinting', 'Metasploit', 'Sockets'],
+    'Security & Crypto': ['Penetration Testing', 'Cryptography', 'Web Fuzzing', 'Footprinting', 'Metasploit', 'Privilege Escalation', 'Active Directory', 'Burp Suite', 'Web Security'],
     'Systems & Low-Level': ['C', 'C++', 'Rust', 'Shell/Bash', 'Unix', 'Kernel Programming'],
     'Software Engineering': ['MERN Stack', 'React', 'Typescript','Node.js', 'Python', 'Flask', 'Java', 'Git'],
     'Cloud & DevOps': ['AWS EC2', 'AWS S3', 'Docker', 'CI/CD']
@@ -125,7 +125,7 @@ const Portfolio = () => {
     },
     {
       title: 'HTB Penetration Testing',
-      slug: 'htb-pentesting',
+      slug: 'hack-the-box',
       description: 'Completed 7+ HackTheBox labs demonstrating reconnaissance, exploitation, and reporting. Developed custom automation scripts reducing exploit time by 30%.',
       tech: ['Python', 'Bash', 'Metasploit', 'nmap'],
       icon: Eye,
@@ -1225,6 +1225,61 @@ const ProjectDetail = ({ slug, onBack, isVisible }) => {
         }
       ]
     },
+    'hack-the-box': {
+      title: 'Hack The Box',
+      icon: Eye,
+      tagline: 'Hands-On Penetration Testing & Offensive Security Training',
+      overview:
+        'I am actively training on the Hack The Box (HTB) platform, focusing on practical penetration testing techniques across Linux, Windows, web applications, and networks. This ongoing work emphasizes real-world attack chains, exploitation, and post-exploitation analysis in controlled lab environments.',
+      tech: [
+        'Linux',
+        'Windows',
+        'Networking',
+        'Web Security',
+        'Privilege Escalation',
+        'Active Directory',
+        'Burp Suite',
+        'Metasploit',
+        'Nmap'
+      ],
+      status: 'Ongoing',
+      sections: [
+        {
+          title: 'Training Focus',
+          items: [
+            'Network reconnaissance and enumeration',
+            'Web application vulnerabilities (OWASP Top 10)',
+            'Linux and Windows privilege escalation',
+            'Credential harvesting and lateral movement',
+            'Active Directory attack paths',
+            'Post-exploitation and persistence techniques'
+          ]
+        },
+
+        {
+          title: 'Learning Approach',
+          content:
+            'The training follows a hands-on methodology where each lab simulates a real-world target system. I approach each machine by enumerating services, identifying vulnerabilities, chaining exploits, and documenting findings to understand both attacker and defender perspectives.'
+        },
+
+        {
+          title: 'Labs & Practice',
+          content:
+            'Practice includes guided HTB Academy modules as well as standalone machines with increasing difficulty. Emphasis is placed on understanding root cause vulnerabilities rather than relying on automated exploitation.'
+        },
+
+        {
+          title: 'Security Mindset',
+          items: [
+            'Think like an attacker to design better defenses',
+            'Understand exploitation mechanics, not just tools',
+            'Map vulnerabilities to real-world threat models',
+            'Translate offensive findings into defensive insights'
+          ]
+        }
+      ]
+    },
+
 
   };
 
