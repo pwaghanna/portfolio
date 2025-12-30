@@ -148,7 +148,8 @@ const Portfolio = () => {
     projects: Server,
     experience: Eye,
     contact: Lock,
-    interests: Trophy
+    interests: Trophy,
+    campus: Layers
   };
 
   const ScrollIndicator = () => (
@@ -162,7 +163,7 @@ const Portfolio = () => {
 
   const Navigation = () => (
     <nav className="fixed top-4 right-4 z-40 flex gap-2">
-      {['hero', 'about', 'skills', 'projects', 'experience', 'interests', 'contact'].map(section => {
+      {['hero', 'about', 'skills', 'projects', 'experience', 'campus', 'interests', 'contact'].map(section => {
         const Icon = sectionIcons[section];
         const isActive = activeSection === section;
 
@@ -399,7 +400,7 @@ const Portfolio = () => {
         ref={el => sectionsRef.current.experience = el}
         className="min-h-screen flex items-center justify-center px-4 py-20"
       >
-        <div className="max-w-4xl mx-auto w-full">
+        <div className="max-w-6xl mx-auto w-full">
           <h2 className="text-4xl font-bold mb-12 flex items-center gap-3">
             <span className="text-emerald-500">&gt;</span> Experience
           </h2>
@@ -410,21 +411,33 @@ const Portfolio = () => {
                   <h3 className="text-2xl font-bold text-emerald-400">Full Stack Developer</h3>
                   <p className="text-gray-400">Huf India Pvt. Ltd</p>
                 </div>
-                <span className="text-gray-500">Jul 2023 – May 2024</span>
+                <span className="text-gray-500">Jul 2023 - May 2024</span>
               </div>
               <ul className="space-y-2 text-gray-300">
                 <li className="flex gap-2">
                   <span className="text-emerald-500">•</span>
-                  <span>Led team of 8 engineers developing MERN stack application for real-time production monitoring</span>
+                  <span>Led and managed a team of 8 engineers in developing a MERN stack application;provided real-time production data, enabling quicker decision-making.</span>
                 </li>
                 <li className="flex gap-2">
                   <span className="text-emerald-500">•</span>
-                  <span>Reduced manual processing time from 1 week to seconds through digitization and automation</span>
+                  <span>Integrated Ant-Design forms for streamlined data submission and automated task scheduling through cron jobs, decreasing manual data entry errors by 15% and freeing up 10 hours per week for plant supervisors.</span>
                 </li>
+
                 <li className="flex gap-2">
                   <span className="text-emerald-500">•</span>
-                  <span>Decreased manual data entry errors by 15% and freed up 10 hours/week for supervisors</span>
+                  <span>Leveraged ThingSpeak to store and retrieve data of produced items sent  by ESP32 microprocessor. Utilized AWS EC2 instance to host the server along with Netlify for the frontend.</span>
                 </li>
+
+                <li className="flex gap-2">
+                  <span className="text-emerald-500">•</span>
+                  <span>Engineered role-based access controls enabling technicians to monitor production via CanvasJS dashboards, trigger automated maintenance alerts, and perform quality assessments, resulting in 15\% fewer errors weekly</span>
+                </li>
+
+                <li className="flex gap-2">
+                  <span className="text-emerald-500">•</span>
+                  <span>Reduced the manual processing time of the internal work from 1 week to a few seconds through digitization of documents and instant generation of graphs.</span>
+                </li>
+                
                 <li className="flex gap-2">
                   <span className="text-emerald-500">•</span>
                   <span>Implemented role-based access controls and automated maintenance alerts</span>
@@ -433,6 +446,55 @@ const Portfolio = () => {
             </div>
           </div>
         </div>
+      </section>
+
+      {/*Campus Leadership Activities*/ }
+      <section
+        className="min-h-screen flex items-center justify-center px-4 py-20"
+        ref={el => sectionsRef.current.campus = el}
+      >
+        <div className="max-w-6xl mx-auto w-full">
+          <h2 className="text-4xl font-bold mb-12 flex items-center gap-3">
+            <span className="text-emerald-500">&gt;</span> Campus Leadership Activities
+          </h2>
+        <div className="bg-gray-900 rounded-lg p-8 border border-gray-800">
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <h3 className="text-2xl font-bold text-emerald-400">Co-Founder & Lead Engineer</h3>
+              <p className="text-gray-400">The Automobile Club (TorqScrew Racing), PICT</p>
+              <p className="text-gray-500 text-sm">Pune, India</p>
+            </div>
+            <span className="text-gray-500">2021 – 2023</span>
+          </div>
+          <ul className="space-y-2 text-gray-300">
+            <li className="flex gap-2">
+              <span className="text-emerald-500">•</span>
+              <span>Co-founded the club as one of five founding members, growing the team from 5 to 40 members</span>
+            </li>
+            <li className="flex gap-2">
+              <span className="text-emerald-500">•</span>
+              <span>Mentored 20 members to design and manufacture the team's first formula kart for FKDC competition</span>
+            </li>
+            <li className="flex gap-2">
+              <span className="text-emerald-500">•</span>
+              <span>Led research and development of 3 critical subsystems: Steering, Braking, and Powertrain</span>
+            </li>
+            <li className="flex gap-2">
+              <span className="text-emerald-500">•</span>
+              <span>Fabricated 80% of the frame using MIG welding and lathe operations within 0.1-inch tolerance</span>
+            </li>
+            <li className="flex gap-2">
+              <span className="text-emerald-500">•</span>
+              <span>Created detailed CAD models in SolidWorks and performed structural strength analysis</span>
+            </li>
+            <li className="flex gap-2">
+              <span className="text-emerald-500">•</span>
+              <span>Selected as primary kart driver after achieving best lap times during testing</span>
+            </li>
+          </ul>
+        </div>
+        </div>
+
       </section>
 
       {/* Interests Section */}
@@ -486,6 +548,8 @@ const Portfolio = () => {
           </div>
         </div>
       </section>
+
+        
 
       {/* Contact Section */}
       <section 
