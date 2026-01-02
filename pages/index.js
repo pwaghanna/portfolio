@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Terminal, Shield, Code, Lock, Eye, Server, Target, Github, Linkedin, Mail, Glasses, Factory, ChevronDown, Trophy, Gamepad2, Activity, Flag, Monitor, ArrowLeft, ExternalLink, Layers } from 'lucide-react';
+import { Terminal, Shield, Code, Lock, Eye, Server, LucideBrickWallFire, Github, Linkedin, Mail, Glasses, Factory, ChevronDown, Trophy, Gamepad2, Activity, Flag, Monitor, ArrowLeft, ExternalLink, Layers } from 'lucide-react';
 
 // Mock Next.js router for demo
 const useRouter = () => {
@@ -130,6 +130,15 @@ const Portfolio = () => {
       tech: ['Python', 'Bash', 'Metasploit', 'nmap'],
       icon: Eye,
       github: 'github.com/pwaghanna/Pentesting_HTB'
+    },
+    {
+      title: 'UFW Security Configuration Guide',
+      slug: 'ufw-firewall',
+      description: 'Comprehensive documentation and implementation guide for Linux firewall configuration using Uncomplicated Firewall (UFW). Covers security scenarios, best practices, and real-world deployment strategies.',
+      tech: ['Linux', 'Network Security', 'System Administration', 'Firewalls', 'Shell/Bash'],
+      icon: LucideBrickWallFire,
+      highlight: false,
+      github: 'github.com/pwaghanna/ufw-guide'  // Update with your actual repo
     },
     {
       title: 'Industrial IoT Platform',
@@ -1340,6 +1349,164 @@ const ProjectDetail = ({ slug, onBack, isVisible }) => {
             'Map vulnerabilities to real-world threat models',
             'Translate offensive findings into defensive insights'
           ]
+        }
+      ]
+    },
+    'ufw-firewall': {
+      title: 'Uncomplicated FireWall (UFW)',
+      icon: LucideBrickWallFire,
+      tagline: 'Linux Firewall Configuration & Security Hardening',
+      overview:
+        'A comprehensive guide and reference implementation for securing Linux systems using UFW. The project demonstrates practical firewall configuration scenarios, security best practices, and defensive strategies for production servers, including SSH hardening, web service exposure control, and brute-force protection.',
+      tech: [
+        'Linux',
+        'UFW',
+        'iptables',
+        'Network Security',
+        'System Administration',
+        'Shell Scripting',
+        'Server Hardening'
+      ],
+      github: 'github.com/pwaghanna/ufw-guide',  // Update with your repo
+      sections: [
+        {
+          title: 'Project Overview',
+          content:
+            'UFW (Uncomplicated Firewall) provides a user-friendly interface to iptables, making Linux firewall configuration accessible without sacrificing power. This project documents installation, configuration strategies, and real-world security scenarios for hardening production systems against network-based attacks.'
+        },
+
+        {
+          title: 'Installation & Setup',
+          content:
+            'UFW installation and initial configuration is straightforward on Debian-based systems. The setup process includes installing the package, verifying the installation, and establishing a secure baseline configuration before enabling the firewall.',
+          image: '/portfolio/projects/ufw/install.png',  // Your screenshot path
+          imageAlt: 'UFW installation process',
+          imageCaption: 'Installing and verifying UFW on Ubuntu/Debian systems'
+        },
+
+        {
+          title: 'Core Firewall Rules',
+          items: [
+            'allow - Permit communication through specified ports or from specific IPs',
+            'deny - Silently drop packets without response (stealth mode)',
+            'reject - Refuse connection with "destination unreachable" response',
+            'limit - Rate-limit connection attempts (default: 6 per IP per 30 seconds)'
+          ]
+        },
+
+        {
+          title: 'Rule Configuration',
+          content:
+            'UFW uses an intuitive syntax that reads like natural English, making it easier to configure complex firewall rules without deep networking knowledge. Rules can target specific ports, protocols, IP addresses, and subnets with directional control.',
+          image: '/portfolio/projects/ufw/rules.png',  // Your screenshot path
+          imageAlt: 'UFW rule configuration examples',
+          imageCaption: 'Configuring firewall rules for ports, IPs, and protocols'
+        },
+
+        {
+          title: 'Security Scenario 1: SSH Hardening',
+          content:
+            'Protect administrative SSH access on production servers by restricting access to trusted subnets and implementing rate limiting to prevent brute-force attacks. This configuration allows SSH only from a private network while logging all rejected connection attempts.',
+          items: [
+            'Restrict SSH to trusted subnet (192.168.1.0/24)',
+            'Apply rate limiting to prevent brute-force attacks',
+            'Enable logging for security monitoring',
+            'Deny all other incoming connections by default'
+          ]
+        },
+
+        {
+          title: 'Security Scenario 2: Web Server Exposure',
+          content:
+            'Configure a secure baseline for public-facing web servers that need to accept HTTP/HTTPS traffic while keeping all other services hidden. This approach follows the principle of least privilege by only exposing required services.',
+          items: [
+            'Allow inbound HTTP (80) and HTTPS (443)',
+            'Deny all other incoming connections',
+            'Preserve outbound access for updates and APIs',
+            'Implement default-deny policy for security'
+          ]
+        },
+
+        {
+          title: 'Security Scenario 3: Database Server Protection',
+          content:
+            'Isolate database services by allowing connections only from trusted internal application servers. This prevents direct internet exposure while maintaining necessary internal communication.',
+          items: [
+            'Deny all public access to database ports',
+            'Allow PostgreSQL (5432) only from internal subnet (10.0.0.0/8)',
+            'Implement subnet-based access control',
+            'Maintain zero external attack surface for database'
+          ]
+        },
+
+        {
+          title: 'Advanced Rate Limiting',
+          content:
+            'The limit rule provides basic protection, but custom rate limiting using iptables offers more granular control. This technique is critical for protecting SSH, RDP, and authentication endpoints from credential stuffing and brute-force attacks.',
+          items: [
+            'Configure custom rate limits (e.g., 3 attempts per 60 seconds)',
+            'Target specific services like SSH port 22',
+            'Use iptables recent module for stateful tracking',
+            'Silently drop excessive connection attempts'
+          ]
+        },
+
+        {
+          title: 'Logging & Monitoring',
+          content:
+            'UFW supports multiple logging verbosity levels and can be configured to log to dedicated files for easier analysis. Proper logging is essential for detecting attack patterns and understanding firewall effectiveness.',
+          items: [
+            'Log all denied/rejected packets for analysis',
+            'Configure verbosity levels (low, medium, high, full)',
+            'Route logs to dedicated files using rsyslog',
+            'Enable automated log analysis for threat detection'
+          ]
+        },
+
+        {
+          title: 'Operational Best Practices',
+          items: [
+            'Always allow SSH before enabling UFW to avoid lockout',
+            'Use deny for stealth, reject when you want to inform clients',
+            'Enable UFW to start automatically on system boot',
+            'Test rules in non-production before deploying',
+            'Document all rule changes for compliance and troubleshooting',
+            'Regularly review logs for unauthorized access attempts'
+          ]
+        },
+
+        {
+          title: 'Common Mistakes & Prevention',
+          items: [
+            'Locking yourself out by enabling UFW before allowing SSH port 22',
+            'Using deny instead of reject during debugging (no client feedback)',
+            'Forgetting that rule order matters (first match wins)',
+            'Not testing rules before production deployment',
+            'Failing to enable firewall persistence across reboots'
+          ]
+        },
+
+        {
+          title: 'Security Architecture',
+          content:
+            'The documented configurations follow defense-in-depth principles with default-deny policies, minimal service exposure, and layered protection against common attack vectors. Each scenario demonstrates how to balance security requirements with operational needs.'
+        },
+
+        {
+          title: 'Key Outcomes',
+          items: [
+            'Implemented secure baseline configurations for multiple server types',
+            'Documented real-world security scenarios with production-ready rules',
+            'Demonstrated SSH hardening techniques against brute-force attacks',
+            'Established rate-limiting strategies for authentication endpoints',
+            'Created reusable firewall templates for common deployment patterns'
+          ]
+        },
+
+        {
+          title: 'Ethical Scope',
+          content:
+            'This project is intended for defensive security, system hardening, and educational purposes only. All configurations assume systems you own or have explicit permission to configure. The techniques documented here are designed to protect infrastructure, not to facilitate unauthorized access.'
         }
       ]
     },
