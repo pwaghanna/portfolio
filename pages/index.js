@@ -233,6 +233,18 @@ const Portfolio = () => {
         </div>
         
         <div className="max-w-4xl mx-auto text-center z-10">
+          <div className="mb-8 flex py-4 justify-center">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full blur-xl opacity-50 animate-pulse" />
+              <div className="relative p-1 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full">
+                <img 
+                  src="/portfolio/profile.jpg" 
+                  alt="Pranav Waghanna"
+                  className="w-40 h-40 md:w-48 md:h-48 rounded-full object-cover border-4 border-gray-950 shadow-2xl"
+                />
+              </div>
+            </div>
+          </div>
           <div className="mb-6 flex items-center justify-center gap-2 text-emerald-500">
             <Terminal size={24} />
             <span className="text-sm">&gt; whoami</span>
