@@ -3,8 +3,8 @@
     output: 'export',
     
 
-    basePath: '/portfolio',
-    assetPrefix: '/portfolio',
+    // basePath: '/',
+    // assetPrefix: '/',
     
     images: {
       unoptimized: true

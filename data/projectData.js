@@ -26,7 +26,7 @@ export const projectData = {
             title: 'System Architecture',
             content:
               'Houdini operates by intercepting VFS operations inside the FreeBSD kernel. By selectively filtering and modifying VFS responses, the module can influence how filesystem and process information is presented to user-space tools, without modifying on-disk data.',
-            image: '/portfolio/projects/houdini/working.png',
+            image: '/projects/houdini/working.png',
             imageAlt: 'VFS hook interception',
             imageCaption: 'VFS hook interception before filesystem resolution'
           },
@@ -45,7 +45,7 @@ export const projectData = {
           {
             title:'Houdini Capabilities',
             content: 'Houdini implements several stealth techniques at the VFS layer, including file hiding, process concealment, and data spoofing. By manipulating VFS responses, the module can effectively hide artifacts from standard system utilities while maintaining system stability.',
-            image: '/portfolio/projects/houdini/load.png',
+            image: '/projects/houdini/load.png',
             imageAlt: 'Loading Houdini module',
             imageCaption: 'Loading the Houdini kernel module into FreeBSD'
           },
@@ -56,12 +56,12 @@ export const projectData = {
               'The project demonstrates how modifying VFS return paths can influence standard system utilities such as ls, find, and ps. By controlling visibility at the abstraction layer, the underlying filesystem and process structures remain untouched.',
             images: [
               {
-                src: '/portfolio/projects/houdini/ls_no_houdini.png',
+                src: '/projects/houdini/ls_no_houdini.png',
                 alt: 'File visibility',
                 caption: 'Files visible without Houdini loaded'
               },
               {
-                src: '/portfolio/projects/houdini/ls_houdini.png',
+                src: '/projects/houdini/ls_houdini.png',
                 alt: 'File hiding',
                 caption: 'Files hidden when Houdini is active'
               }
@@ -72,12 +72,12 @@ export const projectData = {
             content: 'Houdini explores techniques to spoof file metadata and contents at the VFS layer. By intercepting read operations, the module can present altered data to user-space applications while preserving the original on-disk state.',
             images:[
               {
-                src: '/portfolio/projects/houdini/cat_no_passwd.png',
+                src: '/projects/houdini/cat_no_passwd.png',
                 alt: 'File content without Houdini',
                 caption: 'Original file content without Houdini'
               },
               {
-                src: '/portfolio/projects/houdini/cat_houdini.png',
+                src: '/projects/houdini/cat_houdini.png',
                 alt: 'Spoofed file content with Houdini',
                 caption: 'Altered file content when Houdini is active'
               }
@@ -134,7 +134,7 @@ export const projectData = {
           title: 'System Architecture',
           content:
             'The system consists of an eBPF program attached to kernel syscalls using kprobes, which emits structured events to user space via a perf ring buffer. A Python-based controller consumes these events, applies detection heuristics, aggregates metrics, and presents real-time insights.',
-          image: '/portfolio/projects/ebpf-monitor/ebpf_architecture.png',
+          image: '/projects/ebpf-monitor/ebpf_architecture.png',
           imageAlt: 'eBPF monitoring architecture',
           imageCaption: 'Working of a hello eBPF program with perf buffers and kprobes attached to execve()'
         },
@@ -165,7 +165,7 @@ export const projectData = {
           title: 'Experimental Results',
           content:
             'The monitor was evaluated under real system workloads and demonstrated high throughput and reliability. Over a 32-second runtime, the system captured more than 14,000 kernel events with zero perf buffer drops, while flagging security-relevant behavior in real time.',
-          image: '/portfolio/projects/ebpf-monitor/result_statistics.png',
+          image: '/projects/ebpf-monitor/result_statistics.png',
           imageAlt: 'Monitoring statistics',
           imageCaption: 'Event distribution, suspicious activity ratio, and throughput metrics'
         },
@@ -176,12 +176,12 @@ export const projectData = {
             'To evaluate runtime overhead, syscall latency was measured using strace. The results show an approximate 2× increase in execution time for a simple ls command, highlighting the tradeoff between deep kernel visibility and performance.',
           images: [
             {
-              src: '/portfolio/projects/ebpf-monitor/strace_ls.png',
+              src: '/projects/ebpf-monitor/strace_ls.png',
               alt: 'strace without eBPF',
               caption: 'Baseline syscall latency without eBPF monitoring'
             },
             {
-              src: '/portfolio/projects/ebpf-monitor/strace_ls_with_ebpf.png',
+              src: '/projects/ebpf-monitor/strace_ls_with_ebpf.png',
               alt: 'strace with eBPF',
               caption: 'Syscall latency with eBPF kprobes enabled'
             }
@@ -240,7 +240,7 @@ export const projectData = {
             title: 'Demo Video',
             content:
               'A short walkthrough demonstrating student interaction, instructor analytics, and real-time engagement flow.',
-            video: '/portfolio/projects/roomsense/demo.mp4',
+            video: '/projects/roomsense/demo.mp4',
             videoCaption: 'RoomSense system AR demonstration'
           },
 
@@ -248,7 +248,7 @@ export const projectData = {
             title: 'System Architecture',
             content:
               'RoomSense is composed of three core components: a web application for instructors and students, a backend API for session management and data flow, and an AR application running on Snap Spectacles. The system emphasizes low-latency, real-time feedback while maintaining student privacy.',
-            image: '/portfolio/projects/roomsense/architecture.png',
+            image: '/projects/roomsense/architecture.png',
             imageAlt: 'RoomSense system architecture',
             imageCaption: 'Web app, backend API, and Snap Spectacles integration'
           },
@@ -270,12 +270,12 @@ export const projectData = {
               'Engagement is estimated directly on the Snap Spectacles using facial landmark analysis. Metrics such as eyebrow furrowing, head tilt, yaw, and pitch are combined into a normalized engagement score that is visualized as a floating bar above each student’s head. The visualization updates smoothly to avoid jitter and visual overload.',
             images:[
               {
-                  src: '/portfolio/projects/roomsense/engagement.png',
+                  src: '/projects/roomsense/engagement.png',
                   alt: 'AR engagement bars',
                   caption: 'Color-coded engagement bars rendered above detected faces'
               },
               {
-                  src: '/portfolio/projects/roomsense/landmarks.png',
+                  src: '/projects/roomsense/landmarks.png',
                   alt: 'Facial landmarks',
                   caption: 'Facial landmark detection used for engagement estimation'
               }
@@ -286,7 +286,7 @@ export const projectData = {
             title: 'User Workflow',
             content:
               'Instructors create and manage lectures through the web application, while students join sessions using a lecture code without providing personal information. During the lecture, instructors view engagement indicators and incoming questions through the AR interface, enabling adaptive teaching without disrupting delivery.',
-            image: '/portfolio/projects/roomsense/workflow.png',
+            image: '/projects/roomsense/workflow.png',
             imageAlt: 'User workflow diagram',
             imageCaption: 'Instructor and student interaction flow'
           },
@@ -297,7 +297,7 @@ export const projectData = {
             title: 'Evaluation & User Study',
             content:
               'RoomSense was evaluated through a formative user study involving 8 participants, including teaching assistants and students. Despite limited prior exposure to AR technologies, all participants were able to complete core tasks with minimal guidance.',
-            image: '/portfolio/projects/roomsense/results.png',
+            image: '/projects/roomsense/results.png',
             imageAlt: 'User study results',
             imageCaption: 'Usability and satisfaction ratings from post-study surveys'
           },
@@ -332,12 +332,12 @@ export const projectData = {
             title: 'Dashboard Views',
             images: [
               {
-                src: '/portfolio/projects/roomsense/student-view.png',
+                src: '/projects/roomsense/student-view.png',
                 alt: 'Student Web Interface',
                 caption: 'Student interface for joining lectures and submitting questions'
               },
               {
-                src: '/portfolio/projects/roomsense/instructor-view.png',
+                src: '/projects/roomsense/instructor-view.png',
                 alt: 'Instructor Web Dashboard',
                 caption: 'Instructor dashboard for managing lectures, adding notes, and viewing questions'
               }
@@ -394,7 +394,7 @@ export const projectData = {
           title: 'System Architecture',
           content:
             'The system is composed of multiple independent modules that interact through well-defined interfaces. Each module was designed, specified, and reviewed independently to minimize coupling and improve maintainability.',
-          image: '/portfolio/projects/lhupr/module.png',
+          image: '/projects/lhupr/module.png',
           imageAlt: 'LHuPR module architecture',
           imageCaption: 'High-level module diagram illustrating separation of concerns and extensibility'
         },
@@ -513,7 +513,7 @@ export const projectData = {
           title: 'System Architecture',
           content:
             'The system integrates hardware-level machine monitoring with a cloud-hosted web application. IoT devices attached to machines send live production data to the cloud, which is processed by a backend server and visualized through interactive dashboards.',
-          image: '/portfolio/projects/huf/architecture.png',
+          image: '/projects/huf/architecture.png',
           imageAlt: 'System architecture',
           imageCaption: 'IoT devices, cloud infrastructure, backend services, and web dashboards'
         },
@@ -536,12 +536,12 @@ export const projectData = {
             'ESP32-based hardware modules are connected directly to industrial machines. Production counts are calculated using mold cavity counts and machine cycles, then transmitted to the cloud in real time. This enables accurate, live tracking without manual intervention.',
           images: [
             {
-              src: '/portfolio/projects/huf/hardware.png',
+              src: '/projects/huf/hardware.png',
               alt: 'IoT hardware integration',
               caption: 'ESP32-based data collection and real-time machine monitoring'
             },
             {
-              src: '/portfolio/projects/huf/hardware_data_flow.jpeg',
+              src: '/projects/huf/hardware_data_flow.jpeg',
               alt: 'Data flow diagram',
               caption: 'IoT data transmission from machine to thingspeak cloud and dashboards'
             }
@@ -554,12 +554,12 @@ export const projectData = {
             'The platform supports multiple hierarchical roles, each with customized workflows and permissions. Operators manage shift activities, supervisors handle line-level issues, managers oversee production plans, and executives gain plant-wide visibility.',
           images:[
             {
-              src: '/portfolio/projects/huf/df.png',
+              src: '/projects/huf/df.png',
               alt: 'User workflow diagram',
               caption: 'Digitized workflows across production hierarchy'
             },
             {
-              src: '/portfolio/projects/huf/uc.png',
+              src: '/projects/huf/uc.png',
               alt: 'Use case diagram',
               caption: 'Role-specific capabilities and interactions'
             }
@@ -572,12 +572,12 @@ export const projectData = {
             'Interactive dashboards provide insights into machine status, target vs actual production, throughput trends, and non-conformance costs. Graphs and tables update in near real time, enabling faster decision-making on the shop floor.',
           images: [
             {
-              src: '/portfolio/projects/huf/graph1.jpg',
+              src: '/projects/huf/graph1.jpg',
               alt: 'Production dashboard',
               caption: 'Live production metrics and analytics'
             },
             {
-              src: '/portfolio/projects/huf/graphs2.jpg',
+              src: '/projects/huf/graphs2.jpg',
               alt: 'Analytics graphs',
               caption: 'Production trends, KPIS, and throughput analysis'
             }
@@ -587,12 +587,12 @@ export const projectData = {
           title: 'Dashboards',
           images: [
             {
-              src: '/portfolio/projects/huf/operator.jpeg',
+              src: '/projects/huf/operator.jpeg',
               alt: 'Operator dashboard',
               caption: 'Operator interface for shift and machine reporting'
             },
             {
-              src: '/portfolio/projects/huf/supervi_dash.jpeg',
+              src: '/projects/huf/supervi_dash.jpeg',
               alt: 'Supervisor dashboard',
               caption: 'Supervisor dashboard with production workers information and alerts'
             }
@@ -603,7 +603,7 @@ export const projectData = {
           title: 'QRCI & Alert Management',
           content:
             'The system digitizes Line QRCI and Plant QRCI processes with time-based escalation rules. Alerts are automatically forwarded across roles if issues are not resolved within defined time windows, ensuring accountability and faster resolution.',
-          image: '/portfolio/projects/huf/qrci.jpg',
+          image: '/projects/huf/qrci.jpg',
           imageAlt: 'QRCI workflow',
           imageCaption: 'Automated issue escalation and resolution tracking'
         },
@@ -728,7 +728,7 @@ export const projectData = {
           title: 'Installation & Setup',
           content:
             'UFW installation and initial configuration is straightforward on Debian-based systems. The setup process includes installing the package, verifying the installation, and establishing a secure baseline configuration before enabling the firewall.',
-          image: '/portfolio/projects/ufw/install.png',  // Your screenshot path
+          image: '/projects/ufw/install.png',  // Your screenshot path
           imageAlt: 'UFW installation process',
           imageCaption: 'Installing and verifying UFW on Ubuntu/Debian systems'
         },
@@ -747,7 +747,7 @@ export const projectData = {
           title: 'Rule Configuration',
           content:
             'UFW uses an intuitive syntax that reads like natural English, making it easier to configure complex firewall rules without deep networking knowledge. Rules can target specific ports, protocols, IP addresses, and subnets with directional control.',
-          image: '/portfolio/projects/ufw/rules.png',  // Your screenshot path
+          image: '/projects/ufw/rules.png',  // Your screenshot path
           imageAlt: 'UFW rule configuration examples',
           imageCaption: 'Configuring firewall rules for ports, IPs, and protocols'
         },

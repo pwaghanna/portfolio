@@ -238,7 +238,7 @@ const Portfolio = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full blur-xl opacity-50 animate-pulse" />
               <div className="relative p-1 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full">
                 <img 
-                  src="/portfolio/profile.jpg" 
+                  src="/profile.jpg" 
                   alt="Pranav Waghanna"
                   className="w-40 h-40 md:w-48 md:h-48 rounded-full object-cover border-4 border-gray-950 shadow-2xl"
                 />
@@ -260,7 +260,7 @@ const Portfolio = () => {
           </p>
           <div className="flex gap-4 justify-center">
             <a 
-              href="/portfolio/Resume_PranavWaghanna.pdf" 
+              href="/Resume_PranavWaghanna.pdf" 
               target="_blank" 
               rel="noopener noreferrer"
               className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-cyan-500 text-gray-950 font-bold rounded-lg transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-emerald-500/50 flex items-center gap-2"
