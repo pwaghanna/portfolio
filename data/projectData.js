@@ -126,8 +126,10 @@ export const projectData = {
       sections: [
         {
           title: 'Project Overview',
-          content:
-            'This project implements a kernel-level monitoring tool using eBPF kprobes to trace critical system calls such as execve, openat, write, unlinkat, and connect. By operating at the kernel boundary, the monitor captures high-fidelity system events while remaining lightweight and non-intrusive.'
+          content: 'This project implements a kernel-level monitoring tool using eBPF kprobes to trace critical system calls such as execve, openat, write, unlinkat, and connect. By operating at the kernel boundary, the monitor captures high-fidelity system events while remaining lightweight and non-intrusive.',
+          image: '/projects/ebpf-monitor/example.png',
+          imageAlt: 'eBPF monitor flags suspicious activity',
+          imageCaption: 'Example output showing flagged suspicious file access and process execution'
         },
 
         {
@@ -147,7 +149,8 @@ export const projectData = {
             'Detection of suspicious file paths, processes, directory traversal, and sensitive ports',
             'Per-event metadata capture including PID, UID, command, file paths, and network endpoints',
             'Low-overhead design using eBPF perf buffers with zero event loss'
-          ]
+          ],
+          
         },
 
         {
