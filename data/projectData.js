@@ -14,7 +14,7 @@ export const projectData = {
           'Operating Systems',
           'Systems Security'
         ],
-        github: 'https://github.com/pwaghanna/houdini',
+        github: 'https://github.com/pwaghanna/Houdini',
         sections: [
           {
             title: 'Project Overview',
@@ -131,7 +131,6 @@ export const projectData = {
           imageAlt: 'eBPF monitor flags suspicious activity',
           imageCaption: 'Example output showing flagged suspicious file access and process execution'
         },
-
         {
           title: 'System Architecture',
           content:
