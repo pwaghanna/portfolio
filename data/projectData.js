@@ -14,7 +14,7 @@ export const projectData = {
           'Operating Systems',
           'Systems Security'
         ],
-        github: 'https://github.com/pwaghanna/Houdini',
+        github: 'github.com/pwaghanna/Houdini',
         sections: [
           {
             title: 'Project Overview',
