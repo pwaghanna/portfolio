@@ -511,7 +511,7 @@ const Portfolio = () => {
               </p>
               <div className="contact-availability">
                 <span className="contact-availability-dot" />
-                Available from Dec 2025
+                Available for opportunities
               </div>
             </div>
 
