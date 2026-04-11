@@ -1,817 +1,695 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Terminal, Shield, Code, Lock, Eye, Server, LucideBrickWallFire, Github, Linkedin, Mail, Glasses, Factory, ChevronDown, Trophy, Gamepad2, Activity, Flag, Monitor, ArrowLeft, ExternalLink, Layers } from 'lucide-react';
+import { Github, Linkedin, Mail, ArrowUpRight, ArrowLeft, ExternalLink } from 'lucide-react';
 import skills from '../data/skills';
-import projects from '../data/projects';
 import projectData from '../data/projectData';
 
-// Mock Next.js router for demo
-const useRouter = () => {
-  const [currentPath, setCurrentPath] = useState('/');
-  return {
-    pathname: currentPath,
-    push: (path) => setCurrentPath(path),
-    back: () => setCurrentPath('/')
-  };
-};
+/* ─────────────────────────────────────────────
+   LOCAL PROJECT LIST
+   Keep in sync with your projectData.js keys
+   ───────────────────────────────────────────── */
+const PROJECTS = [
+  {
+    slug: 'ebpf-monitor',
+    title: 'eBPF System Monitor',
+    desc: 'Kernel-level security monitoring via syscall tracing - 14K+ events in 32s, zero loss.',
+    tech: ['eBPF', 'C', 'Python', 'BCC', 'Linux Kernel'],
+    github: 'github.com/pwaghanna/eBPF-Monitor',
+  },
+  {
+    slug: 'houdini-rootkit',
+    title: 'Houdini - VFS Rootkit',
+    desc: 'Stealth kernel module for FreeBSD that hooks VFS-layer functions to hide files and spoof directory output.',
+    tech: ['C', 'FreeBSD', 'Kernel Programming', 'VFS'],
+    github: 'github.com/pwaghanna/houdini',
+  },
+  {
+    slug: 'roomsense',
+    title: 'RoomSense - AR Classroom',
+    desc: 'Snap Spectacles AR platform for real-time student engagement at 20 FPS. 8.75/10 satisfaction in user studies.',
+    tech: ['Next.js', 'TypeScript', 'Flask', 'MongoDB', 'Snap AR'],
+    website: 'sites.google.com/view/roomsense/',
+  },
+  {
+    slug: 'lhupr',
+    title: 'LHUPR - Distributed VCS',
+    desc: 'Full distributed version-control system built from scratch in Rust: commits, branching, merging, remote sync.',
+    tech: ['Rust', 'Distributed Systems', 'File Systems'],
+  },
+  {
+    slug: 'cryptopals',
+    title: 'Cryptopals Challenges',
+    desc: 'Block ciphers, stream ciphers, padding oracle attacks, key recovery. Refactored in C for 60% perf gain.',
+    tech: ['Python', 'C', 'Cryptography'],
+    github: 'github.com/pwaghanna/CrytoPals',
+  },
+  {
+    slug: 'hack-the-box',
+    title: 'HTB Penetration Testing',
+    desc: '7+ HackTheBox labs: recon, exploitation, reporting. Custom automation scripts reduced exploit time 30%.',
+    tech: ['Python', 'Bash', 'Metasploit', 'nmap'],
+    github: 'github.com/pwaghanna/Pentesting_HTB',
+  },
+  {
+    slug: 'ufw-firewall',
+    title: 'UFW Security Config Guide',
+    desc: 'Comprehensive implementation guide for Linux firewall config - security scenarios, best practices, real deployments.',
+    tech: ['Linux', 'Network Security', 'Bash', 'Firewalls'],
+    github: 'github.com/pwaghanna/ufw-guide',
+  },
+  {
+    slug: 'huf',
+    title: 'Industrial IoT Platform',
+    desc: 'Led 8-person team building MERN stack app for real-time production monitoring. Reduced manual work from 1 week to seconds.',
+    tech: ['React', 'Node.js', 'MongoDB', 'AWS', 'ESP32'],
+  },
+];
 
+const MARQUEE_ITEMS = [
+  'Systems Programming', 'Kernel Development', 'eBPF', 'Cryptography',
+  'Penetration Testing', 'Rust', 'FreeBSD', 'Linux Internals',
+  'Network Security', 'Distributed Systems', 'AR / VR', 'Full Stack',
+];
+
+const NAV_SECTIONS = ['hero', 'about', 'projects', 'skills', 'experience', 'campus', 'interests', 'contact'];
+
+/* ─────────────────────────────────────────────
+   MAIN PORTFOLIO
+   ───────────────────────────────────────────── */
 const Portfolio = () => {
-  const router = useRouter();
   const [activeSection, setActiveSection] = useState('hero');
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [expandingProject, setExpandingProject] = useState(null);
-  const [expandedBounds, setExpandedBounds] = useState(null);
-  const projectRefs = useRef({});
+  const [page, setPage] = useState({ view: 'home', slug: '' });
   const sectionsRef = useRef({});
 
   useEffect(() => {
     const handleScroll = () => {
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = (window.scrollY / totalHeight) * 100;
-      setScrollProgress(progress);
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      setScrollProgress(total > 0 ? (window.scrollY / total) * 100 : 0);
 
-      Object.entries(sectionsRef.current).forEach(([id, ref]) => {
-        if (ref) {
-          const rect = ref.getBoundingClientRect();
-          if (rect.top <= 100 && rect.bottom >= 100) {
-            setActiveSection(id);
-          }
+      Object.entries(sectionsRef.current).forEach(([id, el]) => {
+        if (el) {
+          const { top, bottom } = el.getBoundingClientRect();
+          if (top <= 120 && bottom >= 120) setActiveSection(id);
         }
       });
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navigateToProject = (slug) => {
-    const element = projectRefs.current[slug];
-    if (element) {
-      const rect = element.getBoundingClientRect();
-      setExpandedBounds({
-        top: rect.top,
-        left: rect.left,
-        width: rect.width,
-        height: rect.height,
-        scrollY: window.scrollY
-      });
-      setExpandingProject(slug);
-      
-      // Wait for expansion animation to complete
-      setTimeout(() => {
-        router.push(`/projects/${slug}`);
-        window.scrollTo(0, 0);
-      }, 600);
-    }
+  const openProject = (slug) => {
+    setPage({ view: 'project', slug });
+    window.scrollTo(0, 0);
   };
 
-  const navigateBack = () => {
-    setExpandingProject('closing');
-    setTimeout(() => {
-      router.back();
-      setTimeout(() => {
-        setExpandingProject(null);
-        setExpandedBounds(null);
-      }, 50);
-    }, 600);
+  const closeProject = () => {
+    setPage({ view: 'home', slug: '' });
+    window.scrollTo(0, 0);
   };
 
-  
-  const projects = [
-    {
-      title: 'Houdini - VFS Rootkit',
-      slug: 'houdini-rootkit',
-      description: 'Advanced kernel-level rootkit targeting VFS layer to hide files, spoof data, and maintain persistence. Implements stealth techniques to evade detection.',
-      tech: ['C', 'Kernel Programming', 'FreeBSD'],
-      icon: Shield,
-      highlight: false,
-      github: 'github.com/pwaghanna/houdini'
-    },
-    {
-      title: 'eBPF System Monitor',
-      slug: 'ebpf-monitor',
-      description: 'Real-time kernel-level security monitoring tool using eBPF for syscall tracing. Tracks process execution, file operations, and network activity with intelligent behavioral detection for malicious patterns.',
-      tech: ['eBPF', 'C', 'Python', 'BCC', 'Kernel Tracing'],
-      icon: Monitor,
-      highlight: false,
-      github: 'github.com/pwaghanna/eBPF-Monitor'
-    },
-    {
-      title: 'RoomSense - AR Classroom Engagement',
-      slug: 'roomsense',
-      description: 'AR/VR solution using Snap Spectacles to provide real-time student engagement tracking, anonymous Q&A, and lecture management. Achieved 8.75/10 satisfaction rating in user studies.',
-      tech: ['Next.js', 'TypeScript', 'Flask', 'MongoDB', 'AWS', 'Snap AR'],
-      icon: Glasses,
-      highlight: false,
-      website: 'sites.google.com/view/roomsense/'
-    },
-    {
-      title: 'LHUPR - Distributed Version Control',
-      slug: 'lhupr',
-      description: 'Lightweight distributed version control system built from scratch in Rust. Implements commits, branching, merging, and remote sync with modular architecture following information hiding principles.',
-      tech: ['Rust', 'Distributed Systems', 'File Systems'],
-      icon: Code,
-      highlight: false
-    },
-    {
-      title: 'Cryptopals Challenges',
-      slug: 'cryptopals',
-      description: 'Implemented solutions covering block cipher modes, stream ciphers, padding oracle attacks, and key recovery. Refactored in C for 60% performance improvement.',
-      tech: ['Python', 'C', 'Cryptography'],
-      icon: Lock,
-      github: 'github.com/pwaghanna/CrytoPals'
-    },
-    {
-      title: 'HTB Penetration Testing',
-      slug: 'hack-the-box',
-      description: 'Completed 7+ HackTheBox labs demonstrating reconnaissance, exploitation, and reporting. Developed custom automation scripts reducing exploit time by 30%.',
-      tech: ['Python', 'Bash', 'Metasploit', 'nmap'],
-      icon: Eye,
-      github: 'github.com/pwaghanna/Pentesting_HTB'
-    },
-    {
-      title: 'UFW Security Configuration Guide',
-      slug: 'ufw-firewall',
-      description: 'Comprehensive documentation and implementation guide for Linux firewall configuration using Uncomplicated Firewall (UFW). Covers security scenarios, best practices, and real-world deployment strategies.',
-      tech: ['Linux', 'Network Security', 'System Administration', 'Firewalls', 'Shell/Bash'],
-      icon: LucideBrickWallFire,
-      highlight: false,
-      github: 'github.com/pwaghanna/ufw-guide'  // Update with your actual repo
-    },
-    {
-      title: 'Industrial IoT Platform',
-      slug: 'huf',
-      description: 'Led team of 8 engineers building MERN stack application for real-time production monitoring. Integrated ESP32 microprocessors and ThingSpeak for data collection.',
-      tech: ['React', 'Node.js', 'MongoDB', 'AWS', 'ESP32'],
-      highlight: false,
-      icon: Factory
-    }
-  ];
-
-  const sectionIcons = {
-    hero: Terminal,
-    about: Code,
-    skills: Shield,
-    projects: Server,
-    experience: Eye,
-    contact: Lock,
-    interests: Trophy,
-    campus: Layers
-  };
-
-  const ScrollIndicator = () => (
-    <div className="fixed top-0 left-0 w-full h-1 bg-gray-800 z-50">
-      <div 
-        className="h-full bg-gradient-to-r from-emerald-500 to-cyan-500 transition-all duration-300"
-        style={{ width: `${scrollProgress}%` }}
-      />
-    </div>
-  );
-
-  const Navigation = () => (
-    <nav className="fixed top-4 right-4 z-40 flex gap-2">
-      {['hero', 'about', 'skills', 'projects', 'experience', 'campus', 'interests', 'contact'].map(section => {
-        const Icon = sectionIcons[section];
-        const isActive = activeSection === section;
-
-        return (
-          <button
-            key={section}
-            onClick={() => sectionsRef.current[section]?.scrollIntoView({ behavior: 'smooth' })}
-            className={`w-3 h-3 rounded-full transition-all duration-300 flex items-center justify-center ${
-              isActive ? 'bg-transparent w-8' : 'bg-gray-600 hover:bg-gray-500'
-            }`}
-            aria-label={section}
-          >
-            {isActive && <Icon size={20} className="text-emerald-500" />}
-          </button>
-        );
-      })}
-    </nav>
-  );
-
-  if (router.pathname.startsWith('/projects/')) {
-    const slug = router.pathname.split('/')[2];
-    return (
-      <>
-        {expandingProject === 'closing' && expandedBounds && (
-          <ExpandingOverlay 
-            bounds={expandedBounds}
-            project={projects.find(p => p.slug === slug)}
-            isClosing={true}
-          />
-        )}
-        <ProjectDetail 
-          slug={slug} 
-          onBack={navigateBack}
-          isVisible={expandingProject !== 'closing'}
-        />
-      </>
-    );
+  if (page.view === 'project') {
+    return <ProjectDetail slug={page.slug} onBack={closeProject} />;
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 font-mono">
-      <ScrollIndicator />
-      <Navigation />
+    <div className="portfolio-root">
+      {/* Noise grain */}
+      <div className="noise-overlay" aria-hidden />
 
-      {/* Expanding Overlay */}
-      {expandingProject && expandingProject !== 'closing' && expandedBounds && (
-        <ExpandingOverlay 
-          bounds={expandedBounds}
-          project={projects.find(p => p.slug === expandingProject)}
-        />
-      )}
+      {/* Left scroll-progress line */}
+      <div className="scroll-progress-track" aria-hidden>
+        <div className="scroll-progress-fill" style={{ height: `${scrollProgress}%` }} />
+      </div>
 
-      {/* Hero Section */}
-      <section 
-        ref={el => sectionsRef.current.hero = el}
-        className="min-h-screen flex items-center justify-center relative overflow-hidden px-4"
-      >
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-500 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-500 rounded-full blur-3xl animate-pulse delay-1000" />
-        </div>
-        
-        <div className="max-w-4xl mx-auto text-center z-10">
-          <div className="mb-8 flex py-4 justify-center">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full blur-xl opacity-50 animate-pulse" />
-              <div className="relative p-1 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full">
-                <img 
-                  src="/profile.jpg" 
-                  alt="Pranav Waghanna"
-                  className="w-40 h-40 md:w-48 md:h-48 rounded-full object-cover border-4 border-gray-950 shadow-2xl"
-                />
-              </div>
-            </div>
-          </div>
-          <div className="mb-6 flex items-center justify-center gap-2 text-emerald-500">
-            <Terminal size={24} />
-            <span className="text-sm">&gt; whoami</span>
-          </div>
-          <h1 className="text-6xl md:text-8xl font-bold mb-4 bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-            Pranav Waghanna
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-400 mb-8">
-            Security Researcher | System Programmer | Software Engineer
-          </p>
-          <p className="text-gray-500 mb-12 max-w-2xl mx-auto">
-            MS CS @ University of Rochester • Focused on cybersecurity, cryptography, and low-level systems programming
-          </p>
-          <div className="flex gap-4 justify-center">
-            <a 
-              href="/Resume_PranavWaghanna.pdf" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-cyan-500 text-gray-950 font-bold rounded-lg transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-emerald-500/50 flex items-center gap-2"
-            >
-              <Terminal size={20} />
-              View Resume
-            </a>
-            <a href="https://github.com/pwaghanna" target="_blank" rel="noopener noreferrer" 
-               className="p-3 bg-gray-800 hover:bg-gray-700 rounded-lg transition-all duration-300 hover:scale-110">
-              <Github size={24} />
-            </a>
-            <a href="https://linkedin.com/in/pranav-waghanna" target="_blank" rel="noopener noreferrer"
-               className="p-3 bg-gray-800 hover:bg-gray-700 rounded-lg transition-all duration-300 hover:scale-110">
-              <Linkedin size={24} />
-            </a>
-            <a href="mailto:pranav.waghanna@gmail.com"
-               className="p-3 bg-gray-800 hover:bg-gray-700 rounded-lg transition-all duration-300 hover:scale-110">
-              <Mail size={24} />
-            </a>
-          </div>
-          <div className="mt-16 animate-bounce">
-            <ChevronDown className="mx-auto text-emerald-500" size={32} />
-          </div>
-        </div>
-      </section>
+      {/* Side dots nav */}
+      <nav className="side-nav" aria-label="Page sections">
+        {NAV_SECTIONS.map(id => (
+          <button
+            key={id}
+            className={`nav-item ${activeSection === id ? 'active' : ''}`}
+            onClick={() => sectionsRef.current[id]?.scrollIntoView({ behavior: 'smooth' })}
+            aria-label={`Go to ${id}`}
+          >
+            <span className="nav-label">{id}</span>
+            <span className="nav-pip" />
+          </button>
+        ))}
+      </nav>
 
-      {/* About Section */}
-      <section 
-        ref={el => sectionsRef.current.about = el}
-        className="min-h-screen flex items-center justify-center px-4 py-20"
-      >
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-4xl font-bold mb-8 flex items-center gap-3">
-            <span className="text-emerald-500">&gt;</span> About
-          </h2>
-          <div className="bg-gray-900 rounded-lg p-8 border border-gray-800 shadow-2xl">
-            <div className="space-y-4 text-gray-300 leading-relaxed">
-              <p className="text-lg">
-                <span className="text-emerald-500">$</span> Graduate student pursuing MS in Computer Science at the University of Rochester,
-                specializing in <span className="text-cyan-400 font-semibold">Computer Security Foundations</span>, 
-                <span className="text-cyan-400 font-semibold"> Cryptography</span>, and 
-                <span className="text-cyan-400 font-semibold"> Collaborative Programming</span>.
-              </p>
-              <p>
-                <span className="text-emerald-500">$</span> Currently developing a <span className="text-red-400 font-semibold">kernel-level rootkit</span> that 
-                manipulates the VFS layer to hide files, spoof data, and maintain stealth. This research explores advanced 
-                persistence techniques and kernel-space programming.
-              </p>
-              <p>
-                <span className="text-emerald-500">$</span> Built a <span className="text-cyan-400 font-semibold">distributed version control system</span> from 
-                scratch in Rust and developed an <span className="text-cyan-400 font-semibold">AR classroom engagement platform</span> using 
-                Snap Spectacles, demonstrating expertise across systems programming, distributed computing, and immersive technologies.
-              </p>
-              <p>
-                <span className="text-emerald-500">$</span> Former Full Stack Developer at Huf India, where I led a team of 8 engineers 
-                building industrial IoT solutions. Reduced manual processing time from 1 week to seconds through automation.
-              </p>
-              <p>
-                <span className="text-emerald-500">$</span> Passionate about <span className="text-cyan-400">penetration testing</span>, 
-                <span className="text-cyan-400"> exploit development</span>, and 
-                <span className="text-cyan-400"> systems security</span>. Active participant in HTB challenges and cryptography competitions.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Skills Section */}
-      <section 
-        ref={el => sectionsRef.current.skills = el}
-        className="min-h-screen flex items-center justify-center px-4 py-20"
-      >
-        <div className="max-w-6xl mx-auto w-full">
-          <h2 className="text-4xl font-bold mb-12 flex items-center gap-3">
-            <span className="text-emerald-500">&gt;</span> Skills
-          </h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            {Object.entries(skills).map(([category, items], idx) => (
-              <div 
-                key={category}
-                className="bg-gray-900 rounded-lg p-6 border border-gray-800 hover:border-emerald-500 transition-all duration-300 hover:scale-105"
-                style={{ animationDelay: `${idx * 100}ms` }}
-              >
-                <h3 className="text-xl font-bold mb-4 text-emerald-400">{category}</h3>
-                <div className="flex flex-wrap gap-2">
-                  {items.map(skill => (
-                    <span 
-                      key={skill}
-                      className="px-3 py-1 bg-gray-800 text-gray-300 rounded-full text-sm hover:bg-gray-700 transition-colors duration-200"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Projects Section */}
-      <section 
-        ref={el => sectionsRef.current.projects = el}
-        className="min-h-screen flex items-center justify-center px-4 py-20"
-      >
-        <div className="max-w-6xl mx-auto w-full">
-          <h2 className="text-4xl font-bold mb-12 flex items-center gap-3">
-            <span className="text-emerald-500">&gt;</span> Projects
-          </h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            {projects.map((project, idx) => (
-              <div 
-                key={project.title}
-                ref={el => projectRefs.current[project.slug] = el}
-                onClick={() => navigateToProject(project.slug)}
-                className={`bg-gray-900 rounded-lg p-6 border transition-all duration-300 hover:scale-105 cursor-pointer ${
-                  project.highlight 
-                    ? 'border-red-500 shadow-lg shadow-red-500/20 hover:shadow-red-500/40' 
-                    : 'border-gray-800 hover:border-emerald-500'
-                } ${expandingProject === project.slug ? 'opacity-0' : 'opacity-100'}`}
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <project.icon className={project.highlight ? 'text-red-400' : 'text-emerald-500'} size={32} />
-                  {project.status && (
-                    <span className="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-xs font-semibold">
-                      {project.status}
-                    </span>
-                  )}
-                </div>
-                <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
-                  {project.title}
-                  <ExternalLink size={16} className="opacity-50" />
-                </h3>
-                <p className="text-gray-400 text-sm mb-4">{project.description}</p>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {project.tech.map(tech => (
-                    <span key={tech} className="px-2 py-1 bg-gray-800 text-cyan-400 rounded text-xs">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-                {(
-                  <div className="text-emerald-500 hover:text-emerald-400 text-sm flex items-center gap-1">
-                    Click to learn more →
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Experience Section */}
-      <section 
-        ref={el => sectionsRef.current.experience = el}
-        className="min-h-screen flex items-center justify-center px-4 py-20"
-      >
-        <div className="max-w-6xl mx-auto w-full">
-          <h2 className="text-4xl font-bold mb-12 flex items-center gap-3">
-            <span className="text-emerald-500">&gt;</span> Experience
-          </h2>
-          <div className="space-y-8">
-            <div className="bg-gray-900 rounded-lg p-8 border border-gray-800">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h3 className="text-2xl font-bold text-emerald-400">Full Stack Developer</h3>
-                  <p className="text-gray-400">Huf India Pvt. Ltd</p>
-                </div>
-                <span className="text-gray-500">Jul 2023 - May 2024</span>
-              </div>
-              <ul className="space-y-2 text-gray-300">
-                <li className="flex gap-2">
-                  <span className="text-emerald-500">•</span>
-                  <span>Led and managed a team of 8 engineers in developing a MERN stack application;provided real-time production data, enabling quicker decision-making.</span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="text-emerald-500">•</span>
-                  <span>Integrated Ant-Design forms for streamlined data submission and automated task scheduling through cron jobs, decreasing manual data entry errors by 15% and freeing up 10 hours per week for plant supervisors.</span>
-                </li>
-
-                <li className="flex gap-2">
-                  <span className="text-emerald-500">•</span>
-                  <span>Leveraged ThingSpeak to store and retrieve data of produced items sent  by ESP32 microprocessor. Utilized AWS EC2 instance to host the server along with Netlify for the frontend.</span>
-                </li>
-
-                <li className="flex gap-2">
-                  <span className="text-emerald-500">•</span>
-                  <span>Engineered role-based access controls enabling technicians to monitor production via CanvasJS dashboards, trigger automated maintenance alerts, and perform quality assessments, resulting in 15\% fewer errors weekly</span>
-                </li>
-
-                <li className="flex gap-2">
-                  <span className="text-emerald-500">•</span>
-                  <span>Reduced the manual processing time of the internal work from 1 week to a few seconds through digitization of documents and instant generation of graphs.</span>
-                </li>
-                
-                <li className="flex gap-2">
-                  <span className="text-emerald-500">•</span>
-                  <span>Implemented role-based access controls and automated maintenance alerts</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/*Campus Leadership Activities*/ }
+      {/* ── HERO ─────────────────────────────── */}
       <section
-        className="min-h-screen flex items-center justify-center px-4 py-20"
-        ref={el => sectionsRef.current.campus = el}
+        ref={el => { sectionsRef.current.hero = el; }}
+        className="hero-section"
+        aria-label="Introduction"
       >
-        <div className="max-w-6xl mx-auto w-full">
-          <h2 className="text-4xl font-bold mb-12 flex items-center gap-3">
-            <span className="text-emerald-500">&gt;</span> Campus Leadership Activities
-          </h2>
-        <div className="bg-gray-900 rounded-lg p-8 border border-gray-800">
-          <div className="flex justify-between items-start mb-4">
-            <div>
-              <h3 className="text-2xl font-bold text-emerald-400">Co-Founder & Lead Engineer</h3>
-              <p className="text-gray-400">The Automobile Club (TorqScrew Racing), PICT</p>
-              <p className="text-gray-500 text-sm">Pune, India</p>
-            </div>
-            <span className="text-gray-500">2021 – 2024</span>
+        <div className="hero-grid-bg" aria-hidden />
+        <div className="hero-glow" aria-hidden />
+
+        {/* Status bar at top */}
+        <div className="hero-status-bar">
+          <div className="hero-status-tag">
+            <span className="hero-status-dot" />
+            Available for opportunities
           </div>
-          <ul className="space-y-2 text-gray-300">
-            <li className="flex gap-2">
-              <span className="text-emerald-500">•</span>
-              <span>Co-founded the club as one of five founding members, growing the team from 5 to 40 members</span>
-            </li>
-            <li className="flex gap-2">
-              <span className="text-emerald-500">•</span>
-              <span>Mentored 20 members to design and manufacture the team's first formula kart for FKDC competition</span>
-            </li>
-            <li className="flex gap-2">
-              <span className="text-emerald-500">•</span>
-              <span>Led research and development of 3 critical subsystems: Steering, Braking, and Powertrain</span>
-            </li>
-            <li className="flex gap-2">
-              <span className="text-emerald-500">•</span>
-              <span>Fabricated 80% of the frame using MIG welding and lathe operations within 0.1-inch tolerance</span>
-            </li>
-            <li className="flex gap-2">
-              <span className="text-emerald-500">•</span>
-              <span>Created detailed CAD models in SolidWorks and performed structural strength analysis</span>
-            </li>
-            <li className="flex gap-2">
-              <span className="text-emerald-500">•</span>
-              <span>Selected as primary kart driver after achieving best lap times during testing</span>
-            </li>
-          </ul>
-        </div>
+          <span className="hero-coordinates">Rochester, NY · MS CS</span>
         </div>
 
-      </section>
+        {/* Eyebrow */}
+        <div className="hero-eyebrow fade-up fade-up-delay-1">
+          Security Researcher &amp; Systems Engineer
+        </div>
 
-      {/* Interests Section */}
-      <section 
-        ref={el => sectionsRef.current.interests = el}
-        className="min-h-screen flex items-center justify-center px-4 py-20"
-      >
-        <div className="max-w-6xl mx-auto w-full">
-          <h2 className="text-4xl font-bold mb-12 flex items-center gap-3">
-            <span className="text-emerald-500">&gt;</span> Interests
-          </h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-gray-900 rounded-lg p-6 border border-gray-800 hover:border-emerald-500 transition-all duration-300 hover:scale-105">
-              <div className="flex items-center gap-3 mb-3">
-                <Flag className="text-red-400" size={28} />
-                <h3 className="text-xl font-bold">Formula 1</h3>
-              </div>
-              <p className="text-gray-400 text-sm">
-                Passionate follower of Formula 1, fascinated by race strategy, telemetry,
-                aerodynamics, and the engineering tradeoffs behind peak performance.
-              </p>
-            </div>
-            <div className="bg-gray-900 rounded-lg p-6 border border-gray-800 hover:border-emerald-500 transition-all duration-300 hover:scale-105">
-              <div className="flex items-center gap-3 mb-3">
-                <Activity className="text-cyan-400" size={28} />
-                <h3 className="text-xl font-bold">Kart Racing</h3>
-              </div>
-              <p className="text-gray-400 text-sm">
-                National Kart Racing competitor with experience in vehicle dynamics, structural analysis and manufacturing techniques.
-                Participated in Formula Kart Design Challenge 2023(FKDC).
-              </p>
-            </div>
-            <div className="bg-gray-900 rounded-lg p-6 border border-gray-800 hover:border-emerald-500 transition-all duration-300 hover:scale-105">
-              <div className="flex items-center gap-3 mb-3">
-                <Trophy className="text-emerald-400" size={28} />
-                <h3 className="text-xl font-bold">Martial Arts</h3>
-              </div>
-              <p className="text-gray-400 text-sm">
-                Practice focused on discipline, consistency, and mental resilience. Training in Kickboxing, Jiu Jitsu, Wrestling, and Muay Thai.
-              </p>
-            </div>
-            <div className="bg-gray-900 rounded-lg p-6 border border-gray-800 hover:border-emerald-500 transition-all duration-300 hover:scale-105">
-              <div className="flex items-center gap-3 mb-3">
-                <Gamepad2 className="text-purple-400" size={28} />
-                <h3 className="text-xl font-bold">Video Gaming</h3>
-              </div>
-              <p className="text-gray-400 text-sm">
-                Enjoy competitive and strategy-based games such as Age of Empires, No Man's Sky, and Counter Strike.
-              </p>
-            </div>
+        {/* Name */}
+        <h1 className="hero-name fade-up fade-up-delay-2">
+          Pranav<br />
+          <span className="hero-name-dim">Waghanna</span>
+          <span className="cursor-blink" aria-hidden />
+        </h1>
+
+        <div className="hero-divider fade-up fade-up-delay-3" />
+
+        {/* Footer row */}
+        <div className="hero-footer fade-up fade-up-delay-4">
+          <div className="hero-descriptor">
+            <div className="hero-role">MS CS · University of Rochester</div>
+            <p className="hero-bio">
+              Building things at the intersection of systems security and low-level programming.
+              From VFS-layer rootkits to distributed version control - I write code that talks to kernels.
+            </p>
           </div>
-        </div>
-      </section>
 
-        
-
-      {/* Contact Section */}
-      <section 
-        ref={el => sectionsRef.current.contact = el}
-        className="min-h-screen flex items-center justify-center px-4 py-20"
-      >
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-8">
-            <span className="text-emerald-500">&gt;</span> Get In Touch
-          </h2>
-          <p className="text-xl text-gray-400 mb-12">
-            Interested in collaborating on security research or discussing opportunities?
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <a 
-              href="mailto:pranav.waghanna@gmail.com"
-              className="px-8 py-4 bg-emerald-500 hover:bg-emerald-600 text-gray-950 font-bold rounded-lg transition-all duration-300 hover:scale-110 flex items-center gap-2"
-            >
-              <Mail size={20} />
-              Email Me
-            </a>
-            <a 
-              href="https://linkedin.com/in/pranav-waghanna"
+          <div className="hero-actions">
+            <a
+              href="/Resume_PranavWaghanna.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-8 py-4 bg-gray-800 hover:bg-gray-700 rounded-lg transition-all duration-300 hover:scale-110 flex items-center gap-2"
+              className="hero-cta"
             >
-              <Linkedin size={20} />
-              Connect on LinkedIn
+              View Résumé <ArrowUpRight size={14} />
             </a>
-          </div>
-          <div className="mt-16 text-gray-600">
-            <p>Rochester, New York • +1 585-537-9675</p>
+            <div className="hero-social-links">
+              <a href="https://github.com/pwaghanna" target="_blank" rel="noopener noreferrer" className="hero-social-link">
+                <Github size={12} /> GitHub
+              </a>
+              <a href="https://linkedin.com/in/pranav-waghanna" target="_blank" rel="noopener noreferrer" className="hero-social-link">
+                <Linkedin size={12} /> LinkedIn
+              </a>
+              <a href="mailto:pranav.waghanna@gmail.com" className="hero-social-link">
+                <Mail size={12} /> Email
+              </a>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-8 text-center text-gray-600 border-t border-gray-800">
-        <p>© 2025 Pranav Waghanna. Built with React & Tailwind CSS.</p>
+      {/* ── MARQUEE ───────────────────────────── */}
+      <div className="marquee-section" aria-hidden>
+        <div className="marquee-track">
+          {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
+            <span key={i} className="marquee-item">
+              {item}
+              <span className="marquee-sep">◆</span>
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* ── ABOUT ────────────────────────────── */}
+      <section ref={el => { sectionsRef.current.about = el; }} aria-label="About">
+        <div className="section-wrap">
+          <div className="section-header">
+            <div className="section-heading-group">
+              <span className="section-number">01</span>
+              <h2 className="section-title">About</h2>
+            </div>
+            <span className="section-meta">Background</span>
+          </div>
+
+          <div className="about-grid">
+            <p className="about-statement">
+              I build tools that operate where most engineers
+              don&apos;t look - the <span className="about-statement-accent">kernel</span>,
+              the <span className="about-statement-accent">syscall layer</span>,
+              the raw byte stream.
+            </p>
+
+            <div className="about-detail-list">
+              {[
+                {
+                  label: 'Education',
+                  value: 'MS Computer Science, University of Rochester (2024–2025). BS Information Technology, PICT Pune (2020–2024).',
+                },
+                {
+                  label: 'Specialization',
+                  value: 'Computer Security Foundations · Cryptography · Systems Programming · Collaborative Software Design.',
+                },
+                {
+                  label: 'Currently',
+                  value: 'Freelance Backend Developer at Brydge - social experiences platform built on Node.js, Supabase, and Railway.',
+                },
+                {
+                  label: 'Research',
+                  value: 'Kernel-level rootkit development (VFS hooking), eBPF syscall monitoring, distributed systems in Rust.',
+                },
+                {
+                  label: 'Interests',
+                  value: 'Penetration testing · Exploit development · Formula 1 strategy & engineering · Martial arts · Kart racing.',
+                },
+              ].map(({ label, value }) => (
+                <div className="about-detail-item" key={label}>
+                  <span className="about-detail-label">{label}</span>
+                  <span className="about-detail-value">{value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── PROJECTS ─────────────────────────── */}
+      <section ref={el => { sectionsRef.current.projects = el; }} aria-label="Projects">
+        <div className="section-wrap">
+          <div className="section-header">
+            <div className="section-heading-group">
+              <span className="section-number">02</span>
+              <h2 className="section-title">Projects</h2>
+            </div>
+            <span className="section-meta">{PROJECTS.length} selected works</span>
+          </div>
+
+          <div className="projects-list">
+            {PROJECTS.map((project, idx) => (
+              <div
+                key={project.slug}
+                className="project-row"
+                role="button"
+                tabIndex={0}
+                onClick={() => openProject(project.slug)}
+                onKeyDown={e => e.key === 'Enter' && openProject(project.slug)}
+              >
+                <span className="project-num">
+                  {String(idx + 1).padStart(2, '0')}
+                </span>
+
+                <div className="project-content">
+                  <div className="project-title">{project.title}</div>
+                  <div className="project-desc">{project.desc}</div>
+                </div>
+
+                <div className="project-tags">
+                  {project.tech.slice(0, 3).map(t => (
+                    <span key={t} className="project-tag">{t}</span>
+                  ))}
+                  {project.tech.length > 3 && (
+                    <span className="project-tag">+{project.tech.length - 3}</span>
+                  )}
+                </div>
+
+                <ArrowUpRight className="project-arrow" size={18} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── SKILLS ───────────────────────────── */}
+      <section ref={el => { sectionsRef.current.skills = el; }} aria-label="Skills">
+        <div className="section-wrap">
+          <div className="section-header">
+            <div className="section-heading-group">
+              <span className="section-number">03</span>
+              <h2 className="section-title">Skills</h2>
+            </div>
+            <span className="section-meta">Technical stack</span>
+          </div>
+
+          <div className="skills-list">
+            {Object.entries(skills).map(([category, items]) => (
+              <div key={category} className="skill-row">
+                <span className="skill-category-label">{category}</span>
+                <div className="skill-pills">
+                  {items.map(skill => (
+                    <span key={skill} className="skill-pill">{skill}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── EXPERIENCE ───────────────────────── */}
+      <section ref={el => { sectionsRef.current.experience = el; }} aria-label="Experience">
+        <div className="section-wrap">
+          <div className="section-header">
+            <div className="section-heading-group">
+              <span className="section-number">04</span>
+              <h2 className="section-title">Experience</h2>
+            </div>
+            <span className="section-meta">Work history</span>
+          </div>
+
+          <div className="experience-list">
+            {/* Brydge */}
+            <div className="exp-card">
+              <div className="exp-card-header">
+                <div>
+                  <div className="exp-role">Backend Developer</div>
+                  <div className="exp-company">Brydge · Freelance Contract</div>
+                </div>
+                <div className="exp-date">Feb 2026 - Present</div>
+              </div>
+              <div className="exp-bullets">
+                {[
+                  'Built a social experiences booking platform - vanilla JS SPA (Vite + Navigo) with Node.js/Express backend deployed on Railway with Supabase (PostgreSQL + Cloudflare R2).',
+                  'Designed and integrated REST APIs for event management, booking workflows, and secure UPI/QR payment processing with automated email notifications.',
+                  'Engineered a CI/CD pipeline via GitHub Actions reducing manual deployment work from hours to minutes; contributed to ₹2L+ revenue in the first 4 weeks.',
+                  'Leveraged AI/LLM tooling to optimize development workflows and improve platform SEO discoverability.',
+                  'Built admin modules for finance tracking, campaign email tooling, user analytics, and a Google Colab data pipeline for bulk user entry classification.',
+                ].map((b, i) => (
+                  <div key={i} className="exp-bullet">
+                    <span className="exp-bullet-marker">▸</span>
+                    <span>{b}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Huf India */}
+            <div className="exp-card">
+              <div className="exp-card-header">
+                <div>
+                  <div className="exp-role">Full Stack Developer</div>
+                  <div className="exp-company">Huf India Pvt. Ltd</div>
+                </div>
+                <div className="exp-date">Jul 2023 - May 2024</div>
+              </div>
+              <div className="exp-bullets">
+                {[
+                  'Led a team of 8 engineers building a MERN stack industrial IoT platform for real-time production monitoring.',
+                  'Integrated ESP32 microprocessors with ThingSpeak for live sensor data ingestion; hosted on AWS EC2 + Netlify.',
+                  'Reduced manual processing time from 1 week to seconds through document digitisation and automated graph generation.',
+                  'Implemented role-based access controls enabling technicians to view CanvasJS dashboards and trigger automated maintenance alerts - reducing errors by 15% weekly.',
+                  'Integrated Ant-Design forms and cron-scheduled tasks, cutting data entry errors 15% and freeing 10 hours/week for plant supervisors.',
+                ].map((b, i) => (
+                  <div key={i} className="exp-bullet">
+                    <span className="exp-bullet-marker">▸</span>
+                    <span>{b}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── CAMPUS ───────────────────────────── */}
+      <section ref={el => { sectionsRef.current.campus = el; }} aria-label="Campus leadership">
+        <div className="section-wrap">
+          <div className="section-header">
+            <div className="section-heading-group">
+              <span className="section-number">05</span>
+              <h2 className="section-title">Leadership</h2>
+            </div>
+            <span className="section-meta">Campus activities</span>
+          </div>
+
+          <div className="campus-card">
+            <div className="exp-card-header">
+              <div>
+                <div className="exp-role">Co-Founder &amp; Lead Engineer</div>
+                <div className="exp-company">The Automobile Club - TorqScrew Racing, PICT · Pune</div>
+              </div>
+              <div className="exp-date">2021 - 2024</div>
+            </div>
+            <div className="exp-bullets">
+              {[
+                'Co-founded as one of five founding members, scaling the team from 5 to 40 members over 3 years.',
+                'Mentored 20 members through design and manufacture of the team\'s first formula kart for the FKDC competition.',
+                'Led R&D across 3 critical subsystems: Steering, Braking, and Powertrain.',
+                'Fabricated 80% of the frame using MIG welding and lathe operations within 0.1-inch tolerance.',
+                'Created detailed SolidWorks CAD models and performed structural strength analysis.',
+                'Selected as primary kart driver after recording best lap times during testing.',
+              ].map((b, i) => (
+                <div key={i} className="exp-bullet">
+                  <span className="exp-bullet-marker">▸</span>
+                  <span>{b}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── INTERESTS ────────────────────────── */}
+      <section ref={el => { sectionsRef.current.interests = el; }} aria-label="Interests">
+        <div className="section-wrap">
+          <div className="section-header">
+            <div className="section-heading-group">
+              <span className="section-number">06</span>
+              <h2 className="section-title">Interests</h2>
+            </div>
+            <span className="section-meta">Outside the terminal</span>
+          </div>
+
+          <div className="interests-grid">
+            {[
+              {
+                icon: '🏎',
+                title: 'Formula 1',
+                desc: 'Fascinated by race strategy, telemetry, aerodynamic tradeoffs, and the engineering that separates milliseconds.',
+              },
+              {
+                icon: '🏁',
+                title: 'Kart Racing',
+                desc: 'National Kart Racing competitor. Participated in FKDC 2023 with deep hands-on experience in vehicle dynamics and frame fabrication.',
+              },
+              {
+                icon: '🥋',
+                title: 'Martial Arts',
+                desc: 'Training in Kickboxing, Jiu Jitsu, Wrestling, and Muay Thai - focused on discipline, consistency, and mental resilience.',
+              },
+              {
+                icon: '🎮',
+                title: 'Strategy Gaming',
+                desc: 'Competitive and strategy-based games: Age of Empires, No Man\'s Sky, Counter-Strike.',
+              },
+            ].map(({ icon, title, desc }) => (
+              <div key={title} className="interest-card">
+                <div className="interest-icon-row">
+                  <span className="interest-icon" role="img" aria-label={title}>{icon}</span>
+                  <span className="interest-title">{title}</span>
+                </div>
+                <p className="interest-desc">{desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CONTACT ──────────────────────────── */}
+      <section ref={el => { sectionsRef.current.contact = el; }} aria-label="Contact">
+        <div className="contact-section">
+          <div className="section-header">
+            <div className="section-heading-group">
+              <span className="section-number">07</span>
+              <h2 className="section-title">Contact</h2>
+            </div>
+            <span className="section-meta">Get in touch</span>
+          </div>
+
+          <div className="contact-body">
+            {/* Left: headline + context */}
+            <div className="contact-left">
+              <h3 className="contact-headline">
+                Open to new<br />opportunities.
+              </h3>
+              <p className="contact-subline">
+                Whether it&apos;s security research, systems engineering, or a full-stack role -
+                I&apos;m always happy to talk. Reach out via any of the channels on the right.
+              </p>
+              <div className="contact-availability">
+                <span className="contact-availability-dot" />
+                Available from Dec 2025
+              </div>
+            </div>
+
+            {/* Right: contact cards */}
+            <div className="contact-right">
+              <a
+                href="mailto:pranav.waghanna@gmail.com"
+                className="contact-card"
+              >
+                <div className="contact-card-left">
+                  <div className="contact-card-icon">
+                    <Mail size={16} />
+                  </div>
+                  <div>
+                    <div className="contact-card-label">Email</div>
+                    <div className="contact-card-value">pranav.waghanna@gmail.com</div>
+                  </div>
+                </div>
+                <ArrowUpRight className="contact-card-arrow" size={16} />
+              </a>
+
+              <a
+                href="https://linkedin.com/in/pranav-waghanna"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="contact-card"
+              >
+                <div className="contact-card-left">
+                  <div className="contact-card-icon">
+                    <Linkedin size={16} />
+                  </div>
+                  <div>
+                    <div className="contact-card-label">LinkedIn</div>
+                    <div className="contact-card-value">linkedin.com/in/pranav-waghanna</div>
+                  </div>
+                </div>
+                <ArrowUpRight className="contact-card-arrow" size={16} />
+              </a>
+
+              <a
+                href="https://github.com/pwaghanna"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="contact-card"
+              >
+                <div className="contact-card-left">
+                  <div className="contact-card-icon">
+                    <Github size={16} />
+                  </div>
+                  <div>
+                    <div className="contact-card-label">GitHub</div>
+                    <div className="contact-card-value">github.com/pwaghanna</div>
+                  </div>
+                </div>
+                <ArrowUpRight className="contact-card-arrow" size={16} />
+              </a>
+
+              <div className="contact-location-row">
+                <span className="contact-location-label">Location</span>
+                <span className="contact-location-value">Rochester, New York &nbsp;·&nbsp; +1 585-537-9675</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── FOOTER ───────────────────────────── */}
+      <footer>
+        <div className="portfolio-footer">
+          <span className="footer-text">
+            © 2025 <span className="footer-accent">Pranav Waghanna</span>. Built with React &amp; Vite.
+          </span>
+          <span className="footer-text" aria-hidden>
+            <span className="footer-accent">▸</span> pwaghanna
+          </span>
+        </div>
       </footer>
     </div>
   );
 };
 
-// Expanding Overlay Component
-const ExpandingOverlay = ({ bounds, project, isClosing = false }) => {
-  const Icon = project?.icon || Code;
-  
-  return (
-    <div 
-      className="fixed inset-0 z-50 pointer-events-none"
-      style={{
-        top: isClosing ? 0 : bounds.scrollY,
-      }}
-    >
-      <div
-        className={`absolute bg-gray-900 rounded-lg border transition-all duration-600 ease-in-out ${
-          project?.highlight ? 'border-red-500' : 'border-gray-800'
-        }`}
-        style={{
-          top: isClosing ? '50%' : `${bounds.top}px`,
-          left: isClosing ? '50%' : `${bounds.left}px`,
-          width: isClosing ? `${bounds.width}px` : '100vw',
-          height: isClosing ? `${bounds.height}px` : '100vh',
-          transform: isClosing 
-            ? `translate(-50%, -50%) translate(${bounds.left + bounds.width/2 - window.innerWidth/2}px, ${bounds.top + bounds.height/2}px)`
-            : 'translate(0, 0)',
-          transformOrigin: 'center',
-          borderRadius: isClosing ? '0.5rem' : '0',
-        }}
-      >
-        <div className={`p-6 transition-opacity duration-300 ${isClosing ? 'opacity-100' : 'opacity-0'}`}>
-          <div className="flex items-start justify-between mb-4">
-            <Icon className={project?.highlight ? 'text-red-400' : 'text-emerald-500'} size={32} />
-            {project?.status && (
-              <span className="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-xs font-semibold">
-                {project.status}
-              </span>
-            )}
-          </div>
-          <h3 className="text-xl font-bold mb-2">{project?.title}</h3>
-          <p className="text-gray-400 text-sm mb-4">{project?.description}</p>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// Project Detail Component
-const ProjectDetail = ({ slug, onBack, isVisible }) => {
-
-
+/* ─────────────────────────────────────────────
+   PROJECT DETAIL
+   ───────────────────────────────────────────── */
+const ProjectDetail = ({ slug, onBack }) => {
   const project = projectData[slug] || {
-    title: 'Project Not Found',
-    overview: 'This project page is under construction.',
-    sections: []
+    title: 'Project',
+    overview: 'Details coming soon.',
+    tech: [],
+    sections: [],
   };
 
-  const Icon = project.icon || Code;
-
   return (
-    <div className={`min-h-screen bg-gray-950 text-gray-100 font-mono transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
-      {/* Back Button */}
-      <button
-        onClick={onBack}
-        className="fixed top-6 left-6 z-50 flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-all duration-300 hover:scale-110 group"
-      >
-        <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-        <span>Back</span>
+    <div className="detail-root">
+      <div className="noise-overlay" aria-hidden />
+
+      <button className="detail-back-btn" onClick={onBack}>
+        <ArrowLeft size={12} />
+        All projects
       </button>
 
-      {/* Hero Section */}
-      <div className="min-h-screen flex items-center justify-center px-4 py-20">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="flex justify-center mb-6">
-              <div className="p-6 bg-gray-900 rounded-2xl border border-gray-800">
-                <Icon className="text-emerald-500" size={64} />
-              </div>
-            </div>
-            <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-              {project.title}
-            </h1>
-            {project.tagline && (
-              <p className="text-xl text-gray-400 mb-6">{project.tagline}</p>
-            )}
-           {/* Links */}
-          
-          <div className="flex gap-4 justify-center mt-12">
-            {project.github && (
-              <a
-                href={`https://${project.github}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-gray-950 font-bold rounded-lg transition-all duration-300 hover:scale-110 flex items-center gap-2"
-              >
-                <Github size={20} />
-                View on GitHub
-              </a>
-            )}
-            {project.website && (
-              <a
-                href={`https://${project.website}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-6 py-3 bg-gray-800 hover:bg-gray-700 rounded-lg transition-all duration-300 hover:scale-110 flex items-center gap-2"
-              >
-                <ExternalLink size={20} />
-                Visit Website
-              </a>
-            )}
-          </div>
-            {project.status && (
-              <span className="inline-block px-4 py-2 bg-red-500/20 text-red-400 rounded-full text-sm font-semibold">
-                {project.status}
-              </span>
-            )}
-            
-          </div>
+      {/* Hero */}
+      <div className="detail-hero">
+        <div className="detail-tech-row">
+          {(project.tech || []).map(t => (
+            <span key={t} className="detail-tech-tag">{t}</span>
+          ))}
+        </div>
 
-          {/* Tech Stack */}
-          <div className="flex flex-wrap gap-2 justify-center mb-12">
-            {project.tech?.map(tech => (
-              <span key={tech} className="px-4 py-2 bg-gray-800 text-cyan-400 rounded-lg font-semibold">
-                {tech}
-              </span>
-            ))}
-          </div>
+        <h1 className="detail-title">{project.title}</h1>
 
-          {/* Overview */}
-          <div className="bg-gray-900 rounded-lg p-8 border border-gray-800 mb-8">
-            <h2 className="text-2xl font-bold mb-4 text-emerald-400">Overview</h2>
-            <p className="text-gray-300 leading-relaxed text-lg">{project.overview}</p>
-          </div>
+        {project.tagline && (
+          <p className="detail-tagline">{project.tagline}</p>
+        )}
 
-          {/* Sections */}
-          {project.sections?.map((section, idx) => (
-            <div key={idx} className="bg-gray-900 rounded-lg p-8 border border-gray-800 mb-8">
-              <h2 className="text-2xl font-bold mb-4 text-emerald-400">{section.title}</h2>
-              {section.content && (
-                <p className="text-gray-300 leading-relaxed">{section.content}</p>
-              )}
-              {section.image && (
-                <div className="mt-6 rounded-lg overflow-hidden border border-gray-700">
-                  <img 
-                    src={section.image} 
-                    alt={section.imageAlt || section.title}
-                    className="w-full h-auto"
-                  />
-                  {section.imageCaption && (
-                    <p className="text-sm text-gray-500 text-center py-2 bg-gray-800">
-                      {section.imageCaption}
-                    </p>
-                  )}
-                </div>
-              )}
-              {section.images && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                  {section.images.map((img, i) => (
-                    <div key={i} className="rounded-lg overflow-hidden border border-gray-700">
-                      <img 
-                        src={img.src} 
-                        alt={img.alt || `${section.title} ${i + 1}`}
-                        className="w-full h-auto"
-                      />
-                      {img.caption && (
-                        <p className="text-sm text-gray-500 text-center py-2 bg-gray-800">
-                          {img.caption}
-                        </p>
-                      )}
+        {project.overview && !project.tagline && (
+          <p className="detail-tagline">{project.overview}</p>
+        )}
+
+        <div className="detail-link-row">
+          {project.github && (
+            <a
+              href={`https://${project.github}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="detail-link detail-link-primary"
+            >
+              <Github size={14} /> View on GitHub
+            </a>
+          )}
+          {project.website && (
+            <a
+              href={`https://${project.website}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="detail-link detail-link-secondary"
+            >
+              <ExternalLink size={14} /> Visit Website
+            </a>
+          )}
+        </div>
+      </div>
+
+      {/* Body */}
+      <div className="detail-body">
+        {/* Overview section (if tagline exists, show overview separately) */}
+        {project.tagline && project.overview && (
+          <div className="detail-section">
+            <span className="detail-section-label">Overview</span>
+            <p className="detail-section-content">{project.overview}</p>
+          </div>
+        )}
+
+        {(project.sections || []).map((section, idx) => (
+          <div key={idx} className="detail-section">
+            <span className="detail-section-label">{section.title}</span>
+            <div className="detail-section-content">
+              {section.content && <p style={{ marginBottom: section.items ? '1.25rem' : 0 }}>{section.content}</p>}
+              {section.items && (
+                <div className="detail-items-list">
+                  {section.items.map((item, i) => (
+                    <div key={i} className="detail-item">
+                      <span className="detail-item-marker">▸</span>
+                      <span>{item}</span>
                     </div>
                   ))}
                 </div>
               )}
-              {section.video && (
-                <div className="mt-6 rounded-lg overflow-hidden border border-gray-700">
-                  <video 
-                    src={section.video} 
-                    controls
-                    className="w-full h-auto"
-                  />
-                  {section.videoCaption && (
-                    <p className="text-sm text-gray-500 text-center py-2 bg-gray-800">
-                      {section.videoCaption}
-                    </p>
-                  )}
-                </div>
-              )}
-              {section.items && (
-                <ul className="space-y-3 mt-4">
-                  {section.items.map((item, i) => (
-                    <li key={i} className="flex gap-3 text-gray-300">
-                      <span className="text-emerald-500 mt-1">▸</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
+              {section.image && (
+                <img
+                  src={section.image}
+                  alt={section.imageAlt || section.title}
+                  style={{ width: '100%', borderRadius: 0, border: '1px solid var(--border)', marginTop: '1rem' }}
+                />
               )}
             </div>
-          ))}
-
-          
-        </div>
+          </div>
+        ))}
       </div>
     </div>
   );

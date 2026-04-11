@@ -19,7 +19,7 @@ export const projectData = {
           {
             title: 'Project Overview',
             content:
-              'Modern malware increasingly targets kernel abstractions to evade user-space monitoring tools. Houdini investigates how VFS-level interception can affect file visibility, process reporting, and data integrity—providing insight into how stealthy persistence mechanisms operate at the OS core.'
+              'Modern malware increasingly targets kernel abstractions to evade user-space monitoring tools. Houdini investigates how VFS-level interception can affect file visibility, process reporting, and data integrity, providing insight into how stealthy persistence mechanisms operate at the OS core.'
           },
 
           {
