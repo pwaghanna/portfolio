@@ -1,5 +1,144 @@
 import { Terminal, Shield, Code, Lock, Eye, Server, LucideBrickWallFire, Github, Linkedin, Mail, Glasses, Factory, ChevronDown, Trophy, Gamepad2, Activity, Flag, Monitor, ArrowLeft, ExternalLink, Layers } from 'lucide-react';
 export const projectData = {
+  'logstream-engine': {
+    title: 'LogStream Engine',
+    icon: Server,
+    tagline: 'High-Performance Data Ingestion System in Rust',
+    overview:
+      'LogStream Engine is a high-performance, append-only data ingestion system built in Rust. Designed for continuous data streams from sensors, devices, and applications, it achieves 60,000+ messages/sec throughput using a custom binary TCP protocol, Tokio async I/O, and a log-structured storage engine inspired by the write path of Apache Kafka.',
+    tech: [
+      'Rust',
+      'Tokio',
+      'TCP',
+      'Custom Binary Protocol',
+      'Log-Structured Storage',
+      'Prometheus',
+      'Docker',
+      'Kubernetes'
+    ],
+    github: 'github.com/pwaghanna/logstream-engine',
+    sections: [
+      {
+        title: 'Project Overview',
+        content:
+          'Modern IoT and telemetry systems require ingestion pipelines that can handle thousands of concurrent producers with minimal latency. LogStream Engine tackles this by implementing the full stack from scratch in Rust — custom wire protocol, async TCP server, and a segment-based storage engine with O(1) reads via an in-memory index.'
+      },
+
+      {
+        title: 'System Architecture',
+        content:
+          'The system is structured as a Cargo workspace with five crates: common (shared types), protocol (binary encoding), storage (segment files and indexing), server (Tokio TCP listener with metrics), and client (test producer). Each crate has a single responsibility with no circular dependencies.',
+        image: '/projects/logstream/architecture.png',
+        imageAlt: 'LogStream Engine architecture diagram',
+        imageCaption: 'End-to-end pipeline from TCP client to segment file on disk'
+      },
+
+      {
+        title: 'Custom Binary Protocol',
+        content:
+          'Rather than HTTP, LogStream uses a custom length-prefixed binary frame format. The fixed 40-byte header encodes frame length, UUID, stream ID, timestamp, and offset. The length prefix solves the TCP framing problem — the decoder returns Ok(None) until a complete frame arrives, then advances the buffer cursor.',
+        image: '/projects/logstream/protocol.png',
+        imageAlt: 'Binary frame layout',
+        imageCaption: 'Wire format: | total_len (4B) | UUID (16B) | stream_id (4B) | timestamp (8B) | offset (8B) | payload |'
+      },
+
+      {
+        title: 'Log-Structured Storage Engine',
+        content:
+          'Each stream gets its own folder containing append-only segment files and a persisted index. Records are never updated or deleted — every write appends to the active segment, which rotates at 256MB. An in-memory index maps record number to (segment_number, byte_offset, length), enabling O(1) reads with no file scanning.',
+        image: '/projects/logstream/disk-layout.png',
+        imageAlt: 'On-disk layout',
+        imageCaption: 'Per-stream folders with rotating segment files and index.bin'
+      },
+
+      {
+        title: 'Core Capabilities',
+        items: [
+          'Custom binary TCP protocol with length-prefixed framing',
+          'Tokio async runtime — one task per connection via epoll',
+          'Bounded concurrency using tokio::sync::Semaphore',
+          'Append-only segment files with 256MB rotation',
+          'O(1) record reads via in-memory (segment, offset) index',
+          'Index persistence using postcard serialization',
+          'Prometheus metrics on a separate HTTP port (9090)',
+          'Docker containerization with environment variable configuration'
+        ]
+      },
+
+      {
+        title: 'Benchmark Results',
+        content:
+          'Benchmarked by sending 10,000 messages over a single persistent TCP connection to a containerized server running in Docker on VirtualBox. The client sends all messages before the connection closes, allowing the server to drain the full buffer.',
+        image: '/projects/logstream/benchmark.png',
+        imageAlt: 'Benchmark output',
+        imageCaption: '10,000 messages in 165ms — 60,606 messages/sec containerized'
+      },
+
+      {
+        title: 'Key Results',
+        items: [
+          '60,606 messages/sec throughput (containerized, VirtualBox)',
+          '10,000 messages stored in 165ms over a single TCP connection',
+          '570,000 bytes written — verified via Prometheus metrics and xxd',
+          'Zero message loss under burst load',
+          'Clean startup and shutdown with index persistence'
+        ]
+      },
+
+      {
+        title: 'Prometheus Metrics',
+        content:
+          'The server exposes a /metrics endpoint on port 9090 in Prometheus text format. Three metrics are tracked: messages_total (counter), bytes_written_total (counter), and active_connections (gauge). Metrics are updated atomically on each message processed.',
+        image: '/projects/logstream/metrics.png',
+        imageAlt: 'Prometheus metrics output',
+        imageCaption: 'curl http://localhost:9090/metrics after benchmark run'
+      },
+
+      {
+        title: 'Key Design Decisions',
+        items: [
+          'Append-only log: sequential disk writes are the fastest possible I/O pattern',
+          'Custom binary protocol: eliminates HTTP framing overhead, reduces latency',
+          'Async over thread-per-connection: Tokio multiplexes thousands of clients on few OS threads',
+          'Semaphore backpressure: server never crashes under overload, applies pressure instead',
+          'Separate index from data: O(1) reads without scanning, persisted for fast restart',
+          'Segment rotation: keeps individual files manageable, enables future compression'
+        ]
+      },
+
+      {
+        title: 'Crate Structure',
+        items: [
+          'common — Message, StreamId, Offset, IndexEntry, CommonError',
+          'protocol — encode() and decode() for the binary wire format',
+          'storage — SegmentFile, StreamStorage, Store with full test coverage',
+          'server — TcpListener, connection handler, semaphore, metrics, axum HTTP',
+          'client — persistent connection producer for testing and benchmarking'
+        ]
+      },
+
+      {
+        title: 'Deployment',
+        content:
+          'The server is containerized using a multi-stage Dockerfile. The builder stage compiles in release mode, the runtime stage uses debian:bookworm-slim. Address and data path are configurable via environment variables, making it suitable for both local development and Kubernetes deployment.',
+        image: '/projects/logstream/docker.png',
+        imageAlt: 'Docker container running',
+        imageCaption: 'Server running containerized with metrics accessible on port 9090'
+      },
+
+      {
+        title: 'Planned Improvements',
+        items: [
+          'WAL (write-ahead log) for crash recovery without full index rebuild',
+          'Replication — leader-follower per stream',
+          'LZ4 compression for sealed segments',
+          'TLS over TCP',
+          'Stream metadata registry (name, type, device mapping)',
+          'HTTP read API for querying records by stream and offset'
+        ]
+      }
+    ]
+  },
     'houdini-rootkit': {
         title: 'Houdini',
         icon: Shield,

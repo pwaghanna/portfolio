@@ -1,5 +1,14 @@
 import { Terminal, Shield, Code, Lock, Eye, Server, LucideBrickWallFire, Github, Linkedin, Mail, Glasses, Factory, ChevronDown, Trophy, Gamepad2, Activity, Flag, Monitor, ArrowLeft, ExternalLink, Layers } from 'lucide-react';
 export const projects = [
+      {
+      title: 'LogStream Engine',
+      slug: 'logstream-engine',
+      description: 'High-performance append-only data ingestion system built in Rust. Custom binary TCP protocol, log-structured storage engine with segment files and in-memory indexing. Achieves 60,000+ messages/sec throughput containerized in Docker.',
+      tech: ['Rust', 'Tokio', 'TCP', 'Docker', 'Prometheus', 'Systems Programming'],
+      icon: Server,
+      highlight: true,
+      github: 'github.com/pwaghanna/LogStream-engine'
+    },
     {
       title: 'Houdini - VFS Rootkit',
       slug: 'houdini-rootkit',

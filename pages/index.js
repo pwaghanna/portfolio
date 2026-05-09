@@ -9,6 +9,14 @@ import projectData from '../data/projectData';
    ───────────────────────────────────────────── */
 const PROJECTS = [
   {
+      title: 'LogStream Engine',
+      slug: 'logstream-engine',
+      desc: 'High-performance append-only data ingestion system built in Rust. Custom binary TCP protocol, log-structured storage engine with segment files and in-memory indexing. Achieves 60,000+ messages/sec throughput containerized in Docker.',
+      tech: ['Rust', 'Tokio', 'TCP', 'Docker', 'Prometheus', 'Systems Programming'],
+      highlight: true,
+      github: 'github.com/pwaghanna/LogStream-engine'
+    },
+  {
     slug: 'ebpf-monitor',
     title: 'eBPF System Monitor',
     desc: 'Kernel-level security monitoring via syscall tracing - 14K+ events in 32s, zero loss.',
